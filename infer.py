@@ -2,6 +2,7 @@ from ollama import chat
 from ollama import ChatResponse
 import pandas as pd
 import progressbar
+import os
 
 # Function to classify text difficulty
 def classify_text_difficulty(text: str) -> str:
@@ -44,14 +45,21 @@ def infer_classification(dataset):
 
     return dataset
 
+def evaluate_classification(dataset):
+    # evaluate the classification
+    pass
+
+def get_difficulty_level():
+    # infer if not already done
+    if os.path.exists("./data/Qualtrics_Annotations_formatB_out.csv"):
+        dataset = pd.read_csv("./data/Qualtrics_Annotations_formatB_out.csv")
+    else:
+        dataset = load_dataset()
+        dataset = infer_classification(dataset)
+    return dataset
+
 
 if __name__ == "__main__":
-    text_to_classify = "Ce n'est pas l'insecte, mais un petit morceau de velours ou de taffetas noir, rond et plat ressemblant à un grain de beauté que les femmes coquettes de la haute société se collaient sur le visage ou sur le décolleté pour mettre en valeur la blancheur de leur teint ou la perfection d'une partie de leur personne."
-    difficulty_level = classify_text_difficulty(text_to_classify)
-
-    dataset = load_dataset() # csv Qualtrics_Annotations_formatB_in.csv
-    print(dataset)
-
-    dataset = infer_classification(dataset)
+    dataset = get_difficulty_level() # infer or load the difficulty level
 
     print(dataset)
