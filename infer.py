@@ -47,7 +47,27 @@ def infer_classification(dataset):
 
 def evaluate_classification(dataset):
     # evaluate the classification
-    pass
+    # compare column "difficulty" with "gold_score_20_label" which contains respectively "Très Facile", "Facile", "Accessible", "+Complexe" and "Very Easy", "Easy", "Accessible", "Complex"
+    # for each pair
+    correct = 0
+    incorrect = 0
+    for index, row in dataset.iterrows():
+        if row["difficulty"] == "Très Facile" and row["difficulty"] == "Very Easy":
+            correct += 1
+        elif row["difficulty"] == "Facile" and row["difficulty"] == "Easy":
+            correct += 1
+        elif row["difficulty"] == "Accessible" and row["difficulty"] == "Accessible":
+            correct += 1
+        elif row["difficulty"] == "+Complexe" and row["difficulty"] == "Complex":
+            correct += 1
+        else:
+            incorrect += 1
+    print(f"Correct: {correct}, Incorrect: {incorrect}")
+    print("Accuracy: ", correct / (correct + incorrect))
+
+    # now let's compute macro F1
+    
+
 
 def get_difficulty_level():
     # infer if not already done
@@ -63,3 +83,7 @@ if __name__ == "__main__":
     dataset = get_difficulty_level() # infer or load the difficulty level
 
     print(dataset)
+    # for each value of the column "difficulty", print value if not in ["Very Easy", "Easy", "Accessible", "Complex"]
+    # print(dataset[~dataset["difficulty"].isin(["Very Easy", "Easy", "Accessible", "Complex"])]["difficulty"].unique())
+
+    evaluate_classification(dataset) # evaluate the classification
