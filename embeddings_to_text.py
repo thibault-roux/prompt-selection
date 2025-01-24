@@ -6,42 +6,9 @@ import numpy as np
 import pickle
 
 
-
-"""
-def load_data(path="./data"):
-    # load train, dev, test from stsb_multi_mt_fr_train.pkl, stsb_multi_mt_fr_dev.pkl, stsb_multi_mt_fr_test.pkl
-    with open(path + "/stsb_multi_mt_fr_train.pkl", "rb") as f:
-        dataset_train = pickle.load(f)
-    with open(path + "/stsb_multi_mt_fr_dev.pkl", "rb") as f:
-        dataset_dev = pickle.load(f)
-    with open(path + "/stsb_multi_mt_fr_test.pkl", "rb") as f:
-        dataset_test = pickle.load(f)
-    return dataset_train, dataset_dev, dataset_test
-
-def temp_load_data(path="./data"):
-    # load train, dev, test from stsb_multi_mt_fr_train.pkl, stsb_multi_mt_fr_dev.pkl, stsb_multi_mt_fr_test.pkl
-    with open(path + "/stsb_multi_mt_fr_test.pkl", "rb") as f:
-        dataset_test = pickle.load(f)
-    return dataset_test
-"""
-
-
-
-# --------------------------------------------------------
-
-
-
-
 # 1. Dataset Class
 class SentenceVectorDataset(Dataset):
     def __init__(self, data_path, tokenizer, max_seq_len, split="train"):
-        """
-        Args:
-            data_path (str): Path to the dataset directory.
-            tokenizer (callable): Tokenizer instance with `texts_to_sequences`.
-            max_seq_len (int): Maximum sequence length for padding.
-            split (str): Dataset split to load ("train", "dev", "test").
-        """
         file_map = {
             "train": "stsb_multi_mt_fr_train.pkl",
             "dev": "stsb_multi_mt_fr_dev.pkl",
@@ -53,7 +20,7 @@ class SentenceVectorDataset(Dataset):
         with open(file_path, "rb") as f:
             data = pickle.load(f)
         
-        # Combine sentence1 and sentence2 with their embeddings
+        # Combine sentences and embeddings
         self.sentences = data["sentence1"] + data["sentence2"]
         self.embeddings = data["sentence1_emb"] + data["sentence2_emb"]
         
@@ -75,9 +42,7 @@ class SentenceVectorDataset(Dataset):
         return torch.tensor(padded, dtype=torch.long), torch.tensor(embedding, dtype=torch.float32)
     
     def _pad_sequence(self, sequence, max_len):
-        """Pad a sequence to the maximum length."""
         return sequence[:max_len] + [0] * (max_len - len(sequence))
-
 
 
 # Tokenizer
@@ -94,8 +59,7 @@ class SimpleTokenizer:
         self.idx2word = {idx: word for word, idx in self.word2idx.items()}
     
     def texts_to_sequences(self, captions):
-        return [[self.word2idx[word] for word in caption.split()] for caption in captions]
-
+        return [[self.word2idx.get(word, 0) for word in caption.split()] for caption in captions]
 
 
 # 2. Define CNN Encoder for Grayscale Images
@@ -112,6 +76,7 @@ class EncoderCNN(nn.Module):
         x = self.dropout(x)
         x = self.relu(self.fc2(x))
         return x
+
 
 # 3. Define RNN Decoder
 class DecoderRNN(nn.Module):
@@ -131,30 +96,40 @@ class DecoderRNN(nn.Module):
         outputs = self.fc2(lstm_out)
         return outputs
 
+
 # 4. Training Loop
-def train_model(encoder, decoder, dataloader, criterion, optimizer, num_epochs=10):
+def train_model(encoder, decoder, dataloader, criterion, optimizer, vocab_size, device, num_epochs=10):
+    encoder.to(device)
+    decoder.to(device)
     encoder.train()
     decoder.train()
     
     for epoch in range(num_epochs):
-        for images, captions_in, captions_out in dataloader:
-            # images, captions_in, captions_out = images.cuda(), captions_in.cuda(), captions_out.cuda()
+        epoch_loss = 0
+        for captions, images in dataloader:
+            captions = captions.to(device)
+            images = images.to(device)
+
+            # Prepare shifted captions
+            captions_in = captions[:, :-1]  # Input captions
+            captions_out = captions[:, 1:]  # Target captions
             
             # Forward pass
             features = encoder(images)
             outputs = decoder(features, captions_in)
             
             # Compute loss
-            loss = criterion(outputs.view(-1, vocab_size), captions_out.view(-1))
+            outputs = outputs[:, :-1, :].contiguous()  # Align dimensions
+            loss = criterion(outputs.view(-1, vocab_size), captions_out.reshape(-1))
             
             # Backward pass
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            
+            epoch_loss += loss.item()
         
-        print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}")
-
-
+        print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {epoch_loss / len(dataloader):.4f}")
 
 
 if __name__ == "__main__":
@@ -171,23 +146,20 @@ if __name__ == "__main__":
 
     # Hyperparameters
     max_seq_len = 50
-
-    # Create datasets for train, dev, and test
-    train_dataset = SentenceVectorDataset(data_path, tokenizer, max_seq_len, split="train")
-    dev_dataset = SentenceVectorDataset(data_path, tokenizer, max_seq_len, split="dev")
-    test_dataset = SentenceVectorDataset(data_path, tokenizer, max_seq_len, split="test")
-
-    # DataLoader for batching
-    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-    dev_loader = DataLoader(dev_dataset, batch_size=32, shuffle=False)
-    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
-
-
-    # Hyperparameters
+    batch_size = 32
+    num_epochs = 10
     input_dim = 1024  # Grayscale images are 32x32 flattened to 1024
     encoded_dim = 256
     embed_size = 256
     hidden_size = 512
+    learning_rate = 0.001
+
+    # Device
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    # Create datasets and data loaders
+    train_dataset = SentenceVectorDataset(data_path, tokenizer, max_seq_len, split="train")
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 
     # Models
     encoder = EncoderCNN(input_dim, encoded_dim)
@@ -195,14 +167,7 @@ if __name__ == "__main__":
 
     # Loss and Optimizer
     criterion = nn.CrossEntropyLoss(ignore_index=0)  # Ignore PAD token
-    optimizer = torch.optim.Adam(list(encoder.parameters()) + list(decoder.parameters()), lr=0.001)
+    optimizer = torch.optim.Adam(list(encoder.parameters()) + list(decoder.parameters()), lr=learning_rate)
 
     # Train the model
-    # encoder.cuda()
-    # decoder.cuda()
-    train_model(encoder, decoder, train_loader, criterion, optimizer)
-
-    # Save the model
-    torch.save(encoder.state_dict(), "encoder.pth")
-    torch.save(decoder.state_dict(), "decoder.pth")
-    print("Models saved successfully!")
+    train_model(encoder, decoder, train_loader, criterion, optimizer, vocab_size, device, num_epochs)
