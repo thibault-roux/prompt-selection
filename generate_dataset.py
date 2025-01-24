@@ -6,27 +6,31 @@ import progressbar
 
 
 def infer(dataset, model):
-    # Infer the embeddings for each sentence in the dataset
-    # add progressbar
+    # Add embeddings to the dataset using map
+    def encode_sentences(example):
+        example["sentence1_emb"] = model.encode(example["sentence1"]).tolist()  # Convert to list for serialization
+        example["sentence2_emb"] = model.encode(example["sentence2"]).tolist()
+        return example
+
+    # Add a progress bar
     bar = progressbar.ProgressBar(maxval=len(dataset))
-    i = 0
-    for df in dataset:
-        df["sentence1_emb"] = model.encode(df["sentence1"])
-        df["sentence2_emb"] = model.encode(df["sentence2"])
-        i += 1
-        bar.update(i)
+    bar.start()
+    dataset = dataset.map(encode_sentences)
     bar.finish()
     return dataset
 
 def save(dataset, savename):
     # save dataset in pickle and text format
-    with open(savename + ".pkl", "wb") as f:
+    with open("data/" + savename + ".pkl", "wb") as f:
         pickle.dump(dataset, f)
-    with open(savename + ".txt", "w") as f: # save only sentence and associated embedding
+    with open("data/" + savename + ".txt", "w") as f: # save only sentence and associated embedding
+        i = 0
         for df in dataset:
-            for i in range(len(df["sentence1"])):
-                f.write(df["sentence1"][i] + "\t" + str(df["sentence1_emb"][i]) + "\n")
-                f.write(df["sentence2"][i] + "\t" + str(df["sentence2_emb"][i]) + "\n")
+            i += 1
+            f.write(df["sentence1"] + "\t" + str(df["sentence1_emb"]) + "\n")
+            f.write(df["sentence2"] + "\t" + str(df["sentence2_emb"]) + "\n")
+            if i > 9:
+                break
 
 
 if __name__ == "__main__":
@@ -39,6 +43,11 @@ if __name__ == "__main__":
     dataset_train = load_dataset(dataset_name, name=lang, split="train")
     dataset_dev = load_dataset(dataset_name, name=lang, split="dev")
     dataset_test = load_dataset(dataset_name, name=lang, split="test")
+
+    # # delete all values of dataset except the first 10 elements
+    # dataset_train = dataset_train.select(list(range(10)))
+    # dataset_dev = dataset_dev.select(list(range(10)))
+    # dataset_test = dataset_test.select(list(range(10)))
 
     # Infering the embeddings
     dataset_train = infer(dataset_train, model)

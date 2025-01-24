@@ -3,6 +3,7 @@ from ollama import ChatResponse
 import pandas as pd
 import progressbar
 import os
+import jiwer
 
 # Function to classify text difficulty
 def classify_text_difficulty(text: str) -> str:
@@ -46,28 +47,37 @@ def infer_classification(dataset):
     return dataset
 
 def evaluate_classification(dataset):
-    # evaluate the classification
     # compare column "difficulty" with "gold_score_20_label" which contains respectively "Très Facile", "Facile", "Accessible", "+Complexe" and "Very Easy", "Easy", "Accessible", "Complex"
-    # for each pair
     correct = 0
     incorrect = 0
     for index, row in dataset.iterrows():
-        if row["difficulty"] == "Très Facile" and row["difficulty"] == "Very Easy":
-            correct += 1
-        elif row["difficulty"] == "Facile" and row["difficulty"] == "Easy":
-            correct += 1
-        elif row["difficulty"] == "Accessible" and row["difficulty"] == "Accessible":
-            correct += 1
-        elif row["difficulty"] == "+Complexe" and row["difficulty"] == "Complex":
-            correct += 1
-        else:
-            incorrect += 1
-    print(f"Correct: {correct}, Incorrect: {incorrect}")
-    print("Accuracy: ", correct / (correct + incorrect))
+        if row["difficulty"] not in ["Very Easy", "Easy", "Accessible", "Complex"]:
+            # compute the CER between row["difficulty"] and  each of the 4 values, and update row["difficulty"] with the value with the lowest CER
+            cer = [jiwer.cer(row["difficulty"][:max(len(row["difficulty"]), 30)], value) for value in ["Very Easy", "Easy", "Accessible", "Complex"]]
+            row["difficulty"] = ["Very Easy", "Easy", "Accessible", "Complex"][cer.index(min(cer))]
 
-    # now let's compute macro F1
-    
+    # convert textual values to numerical values
+    dataset["difficulty"] = dataset["difficulty"].map({"Very Easy": 0, "Easy": 1, "Accessible": 2, "Complex": 3})
+    dataset["gold_score_20_label"] = dataset["gold_score_20_label"].map({"Très Facile": 0, "Facile": 1, "Accessible": 2, "+Complexe": 3})
 
+    # compute the accuracy, adjacent accuracy and macro F1
+    correct = len(dataset[dataset["difficulty"] == dataset["gold_score_20_label"]])
+    adjacent = len(dataset[abs(dataset["difficulty"] - dataset["gold_score_20_label"]) <= 1])
+    f1 = 2 * correct / (len(dataset) + correct)
+    print(f"Accuracy: {correct / len(dataset)}")
+    print(f"Adjacent Accuracy: {adjacent / len(dataset)}")
+    print(f"Macro F1: {f1}")
+
+    # score for each difficulty level
+    for difficulty in [0, 1, 2, 3]:
+        print()
+        correct = len(dataset[(dataset["difficulty"] == dataset["gold_score_20_label"]) & (dataset["difficulty"] == difficulty)])
+        adjacent = len(dataset[(abs(dataset["difficulty"] - dataset["gold_score_20_label"]) <= 1) & (dataset["difficulty"] == difficulty)])
+        f1 = 2 * correct / (len(dataset[dataset["gold_score_20_label"] == difficulty]) + correct)
+        print(f"Difficulty: {difficulty}")
+        print(f"Accuracy: {correct / len(dataset[dataset['gold_score_20_label'] == difficulty])}")
+        print(f"Adjacent Accuracy: {adjacent / len(dataset[dataset['gold_score_20_label'] == difficulty])}")
+        print(f"Macro F1: {f1}")
 
 def get_difficulty_level():
     # infer if not already done
