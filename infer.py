@@ -5,6 +5,8 @@ import progressbar
 import os
 import jiwer
 from sklearn.metrics import f1_score, accuracy_score, confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Function to classify text difficulty
 def classify_text_difficulty(text: str) -> str:
@@ -118,6 +120,8 @@ def evaluate_classification(dataset):
         print(f"  Accuracy: {class_accuracy}")
         print(f"  Adjacent Accuracy: {class_adjacent_accuracy}")
         print(f"  F1: {class_f1}")
+
+    save_confusion_matrix(y_true, y_pred)
 
 def get_difficulty_level():
     # infer if not already done
