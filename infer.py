@@ -47,6 +47,21 @@ def infer_classification(dataset):
 
     return dataset
 
+def save_confusion_matrix(y_true, y_pred):
+    # Calcul et affichage de la matrice de confusion
+    labels = [0, 1, 2, 3]
+    cm = confusion_matrix(y_true, y_pred, labels=labels)
+
+    # Affichage graphique de la matrice de confusion
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+                xticklabels=["Very Easy", "Easy", "Accessible", "Complex"],
+                yticklabels=["Très Facile", "Facile", "Accessible", "+Complexe"])
+    plt.xlabel("Prédictions")
+    plt.ylabel("Vérités terrain")
+    plt.title("Matrice de Confusion")
+    plt.show()
+
 
 def evaluate_classification(dataset):
     # Correction des valeurs erronées dans la colonne "difficulty"
