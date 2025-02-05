@@ -4,6 +4,7 @@ import pandas as pd
 import progressbar
 import os
 import jiwer
+from sklearn.metrics import f1_score, accuracy_score, confusion_matrix
 
 # Function to classify text difficulty
 def classify_text_difficulty(text: str) -> str:
@@ -46,38 +47,59 @@ def infer_classification(dataset):
 
     return dataset
 
+
 def evaluate_classification(dataset):
-    # compare column "difficulty" with "gold_score_20_label" which contains respectively "Très Facile", "Facile", "Accessible", "+Complexe" and "Very Easy", "Easy", "Accessible", "Complex"
-    correct = 0
-    incorrect = 0
+    # Correction des valeurs erronées dans la colonne "difficulty"
     for index, row in dataset.iterrows():
         if row["difficulty"] not in ["Very Easy", "Easy", "Accessible", "Complex"]:
-            # compute the CER between row["difficulty"] and  each of the 4 values, and update row["difficulty"] with the value with the lowest CER
-            cer = [jiwer.cer(row["difficulty"][:max(len(row["difficulty"]), 30)], value) for value in ["Very Easy", "Easy", "Accessible", "Complex"]]
-            row["difficulty"] = ["Very Easy", "Easy", "Accessible", "Complex"][cer.index(min(cer))]
+            # Calcul du CER pour chaque valeur candidate et sélection de la meilleure
+            candidates = ["Very Easy", "Easy", "Accessible", "Complex"]
+            cer_scores = [jiwer.cer(row["difficulty"][:max(len(row["difficulty"]), 30)], candidate) for candidate in candidates]
+            new_val = candidates[cer_scores.index(min(cer_scores))]
+            dataset.at[index, "difficulty"] = new_val
 
-    # convert textual values to numerical values
-    dataset["difficulty"] = dataset["difficulty"].map({"Very Easy": 0, "Easy": 1, "Accessible": 2, "Complex": 3})
-    dataset["gold_score_20_label"] = dataset["gold_score_20_label"].map({"Très Facile": 0, "Facile": 1, "Accessible": 2, "+Complexe": 3})
+    # Conversion des valeurs textuelles en numériques
+    mapping_pred = {"Very Easy": 0, "Easy": 1, "Accessible": 2, "Complex": 3}
+    mapping_gold = {"Très Facile": 0, "Facile": 1, "Accessible": 2, "+Complexe": 3}
+    dataset["difficulty"] = dataset["difficulty"].map(mapping_pred)
+    dataset["gold_score_20_label"] = dataset["gold_score_20_label"].map(mapping_gold)
 
-    # compute the accuracy, adjacent accuracy and macro F1
-    correct = len(dataset[dataset["difficulty"] == dataset["gold_score_20_label"]])
-    adjacent = len(dataset[abs(dataset["difficulty"] - dataset["gold_score_20_label"]) <= 1])
-    f1 = 2 * correct / (len(dataset) + correct)
-    print(f"Accuracy: {correct / len(dataset)}")
-    print(f"Adjacent Accuracy: {adjacent / len(dataset)}")
-    print(f"Macro F1: {f1}")
+    # Extraction des valeurs réelles et prédites
+    y_pred = dataset["difficulty"]
+    y_true = dataset["gold_score_20_label"]
 
-    # score for each difficulty level
+    # Calcul des métriques globales
+    global_accuracy = accuracy_score(y_true, y_pred)
+    global_adjacent_accuracy = (abs(y_true - y_pred) <= 1).mean()
+    global_macro_f1 = f1_score(y_true, y_pred, average='macro', zero_division=0)
+
+    print(f"Global Accuracy: {global_accuracy}")
+    print(f"Global Adjacent Accuracy: {global_adjacent_accuracy}")
+    print(f"Global Macro F1: {global_macro_f1}")
+
+    # Calcul des métriques par classe (F1 classique pour chaque classe)
     for difficulty in [0, 1, 2, 3]:
+        # Sélection des exemples dont la vérité terrain est la classe 'difficulty'
+        idx = (y_true == difficulty)
+        if idx.sum() == 0:
+            continue
+
+        # Accuracy locale (sur les exemples de la classe)
+        class_accuracy = (y_pred[idx] == y_true[idx]).mean()
+
+        # Adjacent accuracy locale (si la différence absolue <= 1)
+        class_adjacent_accuracy = (abs(y_pred[idx] - y_true[idx]) <= 1).mean()
+
+        # Calcul du F1 pour la classe en mode binaire (classe vs reste)
+        y_true_binary = (y_true == difficulty).astype(int)
+        y_pred_binary = (y_pred == difficulty).astype(int)
+        class_f1 = f1_score(y_true_binary, y_pred_binary, average='binary', zero_division=0)
+
         print()
-        correct = len(dataset[(dataset["difficulty"] == dataset["gold_score_20_label"]) & (dataset["difficulty"] == difficulty)])
-        adjacent = len(dataset[(abs(dataset["difficulty"] - dataset["gold_score_20_label"]) <= 1) & (dataset["difficulty"] == difficulty)])
-        f1 = 2 * correct / (len(dataset[dataset["gold_score_20_label"] == difficulty]) + correct)
         print(f"Difficulty: {difficulty}")
-        print(f"Accuracy: {correct / len(dataset[dataset['gold_score_20_label'] == difficulty])}")
-        print(f"Adjacent Accuracy: {adjacent / len(dataset[dataset['gold_score_20_label'] == difficulty])}")
-        print(f"Macro F1: {f1}")
+        print(f"  Accuracy: {class_accuracy}")
+        print(f"  Adjacent Accuracy: {class_adjacent_accuracy}")
+        print(f"  F1: {class_f1}")
 
 def get_difficulty_level():
     # infer if not already done
