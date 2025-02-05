@@ -62,6 +62,9 @@ def save_confusion_matrix(y_true, y_pred):
     plt.title("Matrice de Confusion")
     plt.show()
 
+    # save
+    plt.savefig("./results/confusion_matrix.png")
+
 
 def evaluate_classification(dataset):
     # Correction des valeurs erronées dans la colonne "difficulty"
