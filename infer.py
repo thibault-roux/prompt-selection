@@ -36,7 +36,7 @@ def infer_classification(dataset, model_name, output_path):
     bar = progressbar.ProgressBar(maxval=len(dataset))
     i = 0
     for index, row in dataset.iterrows():
-        dataset.at[index, "difficulty"] = classify_text_difficulty(row["text"])
+        dataset.at[index, "difficulty"] = classify_text_difficulty(row["text"], model_name)
         i += 1
         bar.update(i)
     bar.finish()
