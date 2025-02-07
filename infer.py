@@ -9,9 +9,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Function to classify text difficulty
-def classify_text_difficulty(text: str) -> str:
-    # Set up the chat with the classification prompt
-    response: ChatResponse = chat(model='llama3.2:1b', messages=[
+def classify_text_difficulty(text: str, model_name: str) -> str:
+    response: ChatResponse = chat(model=model_name, messages=[
         {
             'role': 'system',
             'content': (
@@ -33,28 +32,21 @@ def load_dataset(path="../../data/Qualtrics_Annotations_formatB.csv"):
     df = pd.read_csv(path)
     return df
 
-def infer_classification(dataset):
-    # dataset["difficulty"] = dataset["text"].apply(classify_text_difficulty)
-    # this time let's classify difficulty level with a progressbar
+def infer_classification(dataset, model_name, output_path):
     bar = progressbar.ProgressBar(maxval=len(dataset))
     i = 0
     for index, row in dataset.iterrows():
-        row["difficulty"] = classify_text_difficulty(row["text"])
+        dataset.at[index, "difficulty"] = classify_text_difficulty(row["text"])
         i += 1
         bar.update(i)
     bar.finish()
-
     # save in csv format
-    dataset.to_csv("./data/Qualtrics_Annotations_formatB_out.csv", index=False)
-
+    dataset.to_csv(output_path, index=False)
     return dataset
 
-def save_confusion_matrix(y_true, y_pred):
-    # Calcul et affichage de la matrice de confusion
+def save_confusion_matrix(y_true, y_pred, confusion_matrix_path): # output_path not used
     labels = [0, 1, 2, 3]
     cm = confusion_matrix(y_true, y_pred, labels=labels)
-
-    # Affichage graphique de la matrice de confusion
     plt.figure(figsize=(8, 6))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
                 xticklabels=["Very Easy", "Easy", "Accessible", "Complex"],
@@ -65,18 +57,17 @@ def save_confusion_matrix(y_true, y_pred):
     plt.show()
 
     # save
-    plt.savefig("./results/confusion_matrix.png")
+    plt.savefig(confusion_matrix_path)
 
 
-def evaluate_classification(dataset):
+def evaluate_classification(dataset, confusion_matrix_path):
     # Correction des valeurs erronées dans la colonne "difficulty"
     for index, row in dataset.iterrows():
         if row["difficulty"] not in ["Very Easy", "Easy", "Accessible", "Complex"]:
             # Calcul du CER pour chaque valeur candidate et sélection de la meilleure
             candidates = ["Very Easy", "Easy", "Accessible", "Complex"]
             cer_scores = [jiwer.cer(row["difficulty"][:max(len(row["difficulty"]), 30)], candidate) for candidate in candidates]
-            new_val = candidates[cer_scores.index(min(cer_scores))]
-            dataset.at[index, "difficulty"] = new_val
+            dataset.at[index, "difficulty"] = candidates[cer_scores.index(min(cer_scores))]
 
     # Conversion des valeurs textuelles en numériques
     mapping_pred = {"Very Easy": 0, "Easy": 1, "Accessible": 2, "Complex": 3}
@@ -121,23 +112,26 @@ def evaluate_classification(dataset):
         print(f"  Adjacent Accuracy: {class_adjacent_accuracy}")
         print(f"  F1: {class_f1}")
 
-    save_confusion_matrix(y_true, y_pred)
+    save_confusion_matrix(y_true, y_pred, confusion_matrix_path)
 
-def get_difficulty_level():
-    # infer if not already done
-    if os.path.exists("./data/Qualtrics_Annotations_formatB_out.csv"):
-        dataset = pd.read_csv("./data/Qualtrics_Annotations_formatB_out.csv")
+def get_difficulty_level(dataset_path, model_name, output_path):
+    if os.path.exists(output_path):
+        dataset = pd.read_csv(output_path)
     else:
-        dataset = load_dataset()
-        dataset = infer_classification(dataset)
+        dataset = load_dataset(dataset_path)
+        dataset = infer_classification(dataset, model_name, output_path)
     return dataset
 
-
 if __name__ == "__main__":
-    dataset = get_difficulty_level() # infer or load the difficulty level
+    model_name = "llama3.2:1b"
+    dataset_path = "../../data/Qualtrics_Annotations_formatB.csv"
+    output_path = "./data/Qualtrics_Annotations_formatB_out_" + model_name + ".csv"
+    confusion_matrix_path = "./results/confusion_matrix_" + model_name + ".png"
+
+    dataset = get_difficulty_level(dataset_path, model_name, output_path) # infer or load the difficulty level
 
     print(dataset)
     # for each value of the column "difficulty", print value if not in ["Very Easy", "Easy", "Accessible", "Complex"]
     # print(dataset[~dataset["difficulty"].isin(["Very Easy", "Easy", "Accessible", "Complex"])]["difficulty"].unique())
 
-    evaluate_classification(dataset) # evaluate the classification
+    evaluate_classification(dataset, confusion_matrix_path) # evaluate the classification
