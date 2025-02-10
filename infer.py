@@ -119,6 +119,8 @@ def evaluate_classification(dataset, confusion_matrix_path, results_path):
     print(f"Global Adjacent Accuracy: {global_adjacent_accuracy}")
     print(f"Global Macro F1: {global_macro_f1}")
 
+    txt = f"global_accuracy\t{global_accuracy}\nglobal_adjacent_accuracy\t{global_adjacent_accuracy}\nglobal_macro_f1\t{global_macro_f1}\n"
+
     # Calcul des métriques par classe (F1 classique pour chaque classe)
     for difficulty in [0, 1, 2, 3]:
         # Sélection des exemples dont la vérité terrain est la classe 'difficulty'
@@ -142,6 +144,8 @@ def evaluate_classification(dataset, confusion_matrix_path, results_path):
         print(f"  Accuracy: {class_accuracy}")
         print(f"  Adjacent Accuracy: {class_adjacent_accuracy}")
         print(f"  F1: {class_f1}")
+
+        txt += f"difficulty_{difficulty}_accuracy\t{class_accuracy}\ndifficulty_{difficulty}_adjacent_accuracy\t{class_adjacent_accuracy}\ndifficulty_{difficulty}_f1\t{class_f1}\n"
 
     save_confusion_matrix(y_true, y_pred, confusion_matrix_path)
 
