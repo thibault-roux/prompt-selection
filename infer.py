@@ -106,7 +106,7 @@ def classify_text_difficulty(text: str, model_name: str, prompt_type: str) -> st
                 'content': text,
             },
         ])
-    elif prompt_type == "fr_few_shot_COT":
+    elif prompt_type == "fr_few_shot_cot": # chain of thought
         shot1 = "Les fruits et les légumes    La pomme est un fruit. L’ananas est un fruit. Le melon est un fruit. Les poires sont des fruits. (il y en a plusieurs)Les raisins sont des fruits. Les pommes sont des fruits. Les mandarines sont des fruits. Avec les pommes je prépare une tarte aux pommes. Avec les oranges je prépare un jus d’orange. Avec des fruits, je prépare une salade de fruits. Il faut peler les fruits avant de les manger. Je pèle la pomme, je pèle la poire. Il faut enlever les pépins de la pomme.      Le chou est un légume, les courgettes sont des légumes, les oignons sont des légumes, la salade est un légume, les carottes sont des légumes, les champignons sont des légumes. Le concombre est un légume. Il faut peler les légumes avant de les préparer. Il faut couper les légumes avant de les préparer. Il faut laver les légumes avant de les préparer. Avec les légumes, je prépare de la soupe. Avec les légumes, je prépare une salade. Avec les pommes de terre je prépare des frites."
         cot1 = "Ce texte est de niveau Très Facile.    Justification : 1) Vocabulaire simple et courant : Les mots utilisés sont basiques et familiers. 2) Phrases courtes et structurées de manière répétitive : Cela facilite la compréhension. 3) Aucune notion abstraite ou complexe : Le texte reste concret et factuel. 4) Présence de nombreuses répétitions : Elles renforcent la compréhension et la mémorisation.    Ce type de texte convient aux jeunes enfants ou aux débutants en apprentissage du français. "
         value1 = "Très Facile"
@@ -146,7 +146,7 @@ def classify_text_difficulty(text: str, model_name: str, prompt_type: str) -> st
             },
         ])
     else:
-        raise ValueError("Invalid prompt type. Must be 'en', 'fr' or 'en_do_not'.")
+        raise ValueError("Invalid prompt type. Must be 'en', 'fr', 'en_do_not', 'fr_do_not', 'fr_few_shot', or 'fr_few_shot_cot'.")
     return response['message']['content']
 
 
@@ -271,7 +271,7 @@ def get_difficulty_level(dataset_path, model_name, prompt_type, csv_path):
 
 if __name__ == "__main__":
     model_name = "deepseek-r1:70b" # "llama3.2:1b" # "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
-    prompt_type = "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" "fr"
+    prompt_type = "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" "fr"
     dataset_path = "../../data/Qualtrics_Annotations_formatB.csv"
     csv_path = "./data/Qualtrics_Annotations_formatB_out_" + model_name + "_" + prompt_type + ".csv"
     confusion_matrix_path = "./results/confusion_matrix_" + model_name + "_" + prompt_type + ".png"
