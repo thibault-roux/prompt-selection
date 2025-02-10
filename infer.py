@@ -43,6 +43,24 @@ def classify_text_difficulty(text: str, model_name: str, prompt_type: str) -> st
                 'content': text,
             },
         ])
+    elif prompt_type == "en_do_not":
+        response: ChatResponse = chat(model=model_name, messages=[
+            {
+                'role': 'system',
+                'content': (
+                    'Classify the given text into one of the following levels of difficulty: '
+                    'Very Easy, Easy, Accessible, or Complex. '
+                    'Do not predict only <Accessible>. '
+                    'Desired format: <Level of difficulty>'
+                ),
+            },
+            {
+                'role': 'user',
+                'content': text,
+            },
+        ])
+    else:
+        raise ValueError("Invalid prompt type. Must be 'en', 'fr' or 'en_do_not'.")
     return response['message']['content']
 
 
@@ -91,11 +109,16 @@ def evaluate_classification(dataset, confusion_matrix_path, results_path):
                 predicted_class = match.group(1)
                 dataset.at[index, "difficulty"] = predicted_class
             else:
-                # Calcul du CER pour chaque valeur candidate et sélection de la meilleure
-                candidates = ["Very Easy", "Easy", "Accessible", "Complex", "Très Facile", "Facile", "Accessible", "+Complexe"]
-                # cer_scores = [jiwer.cer(row["difficulty"][:max(len(row["difficulty"]), 30)], candidate) for candidate in candidates]
-                cer_scores = [jiwer.cer(row["difficulty"][-15:].lower(), candidate.lower()) for candidate in candidates]
-                dataset.at[index, "difficulty"] = candidates[cer_scores.index(min(cer_scores))]
+                match = re.search(r"(Very Easy|Easy|Accessible|Complex|Très Facile|Facile|Accessible|\+Complexe)", row["difficulty"][-35:])
+                if match:
+                    predicted_class = match.group(1)
+                    dataset.at[index, "difficulty"] = predicted_class
+                else:
+                    # Calcul du CER pour chaque valeur candidate et sélection de la meilleure
+                    candidates = ["Very Easy", "Easy", "Accessible", "Complex", "Très Facile", "Facile", "Accessible", "+Complexe"]
+                    # cer_scores = [jiwer.cer(row["difficulty"][:max(len(row["difficulty"]), 30)], candidate) for candidate in candidates]
+                    cer_scores = [jiwer.cer(row["difficulty"][-15:].lower(), candidate.lower()) for candidate in candidates]
+                    dataset.at[index, "difficulty"] = candidates[cer_scores.index(min(cer_scores))]
             # print("After:", dataset.at[index, "difficulty"])
             # print("Real:", row["gold_score_20_label"])
             # input()
@@ -148,6 +171,8 @@ def evaluate_classification(dataset, confusion_matrix_path, results_path):
         txt += f"difficulty_{difficulty}_accuracy\t{class_accuracy}\ndifficulty_{difficulty}_adjacent_accuracy\t{class_adjacent_accuracy}\ndifficulty_{difficulty}_f1\t{class_f1}\n"
 
     save_confusion_matrix(y_true, y_pred, confusion_matrix_path)
+    with open(results_path, "w") as f:
+        f.write(txt)
 
 def get_difficulty_level(dataset_path, model_name, prompt_type, csv_path):
     if os.path.exists(csv_path):
@@ -159,7 +184,7 @@ def get_difficulty_level(dataset_path, model_name, prompt_type, csv_path):
 
 if __name__ == "__main__":
     model_name = "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
-    prompt_type = "fr" # "en"
+    prompt_type = "en_do_not" # "en" "fr"
     dataset_path = "../../data/Qualtrics_Annotations_formatB.csv"
     csv_path = "./data/Qualtrics_Annotations_formatB_out_" + model_name + "_" + prompt_type + ".csv"
     confusion_matrix_path = "./results/confusion_matrix_" + model_name + "_" + prompt_type + ".png"
