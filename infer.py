@@ -86,6 +86,8 @@ value4 = "+Complexe"
 
 # Function to classify text difficulty
 def classify_text_difficulty(text: str, model_name: str, prompt_type: str) -> str:
+    global instructs_json, shot1, value1, shot2, value2, shot3, value3, shot4, value4, cot1, cot2, cot3, cot4
+
     if prompt_type == "en":
         response: ChatResponse = chat(model=model_name, messages=[
             {
