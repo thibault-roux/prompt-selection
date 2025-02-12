@@ -276,17 +276,25 @@ def evaluate_classification(dataset, confusion_matrix_path, results_path):
     # Correction des valeurs erronées dans la colonne "difficulty"
     for index, row in dataset.iterrows():
         if row["difficulty"] not in ["Very Easy", "Easy", "Accessible", "Complex", "Très Facile", "Facile", "Accessible", "+Complexe"]:
-            # print("Text:", row["text"])
-            # print("Before:", row["difficulty"])
+            print("Text:", row["text"])
+            print("Before:", row["difficulty"])
 
-            match = re.search(pattern, row["difficulty"])
-            if match:
-                predicted_class = match.group(1)
+            matches = re.findall(pattern, row["difficulty"]) # Trouver toutes les occurrencesif match:
+            if matches:
+                predicted_class = matches[-1]  # Prendre la dernière occurrence
                 dataset.at[index, "difficulty"] = predicted_class
+            # match = re.search(pattern, row["difficulty"])
+            # if match:
+            #     predicted_class = match.group(1)
+            #     dataset.at[index, "difficulty"] = predicted_class
             else:
-                match = re.search(r"(Very Easy|Easy|Accessible|Complex|Très Facile|Facile|Accessible|\+Complexe)", row["difficulty"][-35:])
-                if match:
-                    predicted_class = match.group(1)
+                # match = re.search(r"(Very Easy|Easy|Accessible|Complex|Très Facile|Facile|Accessible|\+Complexe)", row["difficulty"][-35:])
+                # if match:
+                #     predicted_class = match.group(1)
+                #     dataset.at[index, "difficulty"] = predicted_class
+                matches = re.findall(r"(Very Easy|Easy|Accessible|Complex|Très Facile|Facile|Accessible|\+Complexe)", row["difficulty"][-35:])
+                if matches:
+                    predicted_class = matches[-1]
                     dataset.at[index, "difficulty"] = predicted_class
                 else:
                     # Calcul du CER pour chaque valeur candidate et sélection de la meilleure
@@ -294,9 +302,9 @@ def evaluate_classification(dataset, confusion_matrix_path, results_path):
                     # cer_scores = [jiwer.cer(row["difficulty"][:max(len(row["difficulty"]), 30)], candidate) for candidate in candidates]
                     cer_scores = [jiwer.cer(row["difficulty"][-15:].lower(), candidate.lower()) for candidate in candidates]
                     dataset.at[index, "difficulty"] = candidates[cer_scores.index(min(cer_scores))]
-            # print("After:", dataset.at[index, "difficulty"])
-            # print("Real:", row["gold_score_20_label"])
-            # input()
+            print("After:", dataset.at[index, "difficulty"])
+            print("Real:", row["gold_score_20_label"])
+            input()
 
     # Conversion des valeurs textuelles en numériques
     mapping_pred = {"Very Easy": 0, "Easy": 1, "Accessible": 2, "Complex": 3, "Très Facile": 0, "Facile": 1, "Accessible": 2, "+Complexe": 3}
@@ -359,7 +367,7 @@ def get_difficulty_level(dataset_path, model_name, prompt_type, csv_path):
 
 if __name__ == "__main__":
     model_name = "deepseek-r1:70b" # "llama3.2:1b" # "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
-    prompt_type = "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" "fr"
+    prompt_type = "fr_few_shot_cot" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" "fr"
     dataset_path = "../../data/Qualtrics_Annotations_formatB.csv"
     csv_path = "./data/Qualtrics_Annotations_formatB_out_" + model_name + "_" + prompt_type + ".csv"
     confusion_matrix_path = "./results/confusion_matrix_" + model_name + "_" + prompt_type + ".png"
