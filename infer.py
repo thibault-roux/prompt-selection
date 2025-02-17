@@ -65,24 +65,48 @@ instructs = {
 
 instructs_json = json.dumps(instructs, indent=4, ensure_ascii=False)
 
-# Few shot learning with chain of thougth
-shot1 = "Les fruits et les légumes    La pomme est un fruit. L’ananas est un fruit. Le melon est un fruit. Les poires sont des fruits. (il y en a plusieurs)Les raisins sont des fruits. Les pommes sont des fruits. Les mandarines sont des fruits. Avec les pommes je prépare une tarte aux pommes. Avec les oranges je prépare un jus d’orange. Avec des fruits, je prépare une salade de fruits. Il faut peler les fruits avant de les manger. Je pèle la pomme, je pèle la poire. Il faut enlever les pépins de la pomme.      Le chou est un légume, les courgettes sont des légumes, les oignons sont des légumes, la salade est un légume, les carottes sont des légumes, les champignons sont des légumes. Le concombre est un légume. Il faut peler les légumes avant de les préparer. Il faut couper les légumes avant de les préparer. Il faut laver les légumes avant de les préparer. Avec les légumes, je prépare de la soupe. Avec les légumes, je prépare une salade. Avec les pommes de terre je prépare des frites."
-cot1 = "Ce texte est de niveau Très Facile.    Justification : 1) Vocabulaire simple et courant : Les mots utilisés sont basiques et familiers. 2) Phrases courtes et structurées de manière répétitive : Cela facilite la compréhension. 3) Aucune notion abstraite ou complexe : Le texte reste concret et factuel. 4) Présence de nombreuses répétitions : Elles renforcent la compréhension et la mémorisation.    Ce type de texte convient aux jeunes enfants ou aux débutants en apprentissage du français. "
-value1 = "Très Facile"
+if True:
+    # Few shot learning with chain of thougth
+    shot1 = "Les fruits et les légumes    La pomme est un fruit. L’ananas est un fruit. Le melon est un fruit. Les poires sont des fruits. (il y en a plusieurs)Les raisins sont des fruits. Les pommes sont des fruits. Les mandarines sont des fruits. Avec les pommes je prépare une tarte aux pommes. Avec les oranges je prépare un jus d’orange. Avec des fruits, je prépare une salade de fruits. Il faut peler les fruits avant de les manger. Je pèle la pomme, je pèle la poire. Il faut enlever les pépins de la pomme.      Le chou est un légume, les courgettes sont des légumes, les oignons sont des légumes, la salade est un légume, les carottes sont des légumes, les champignons sont des légumes. Le concombre est un légume. Il faut peler les légumes avant de les préparer. Il faut couper les légumes avant de les préparer. Il faut laver les légumes avant de les préparer. Avec les légumes, je prépare de la soupe. Avec les légumes, je prépare une salade. Avec les pommes de terre je prépare des frites."
+    cot1 = "Ce texte est de niveau Très Facile.    Justification : 1) Vocabulaire simple et courant : Les mots utilisés sont basiques et familiers. 2) Phrases courtes et structurées de manière répétitive : Cela facilite la compréhension. 3) Aucune notion abstraite ou complexe : Le texte reste concret et factuel. 4) Présence de nombreuses répétitions : Elles renforcent la compréhension et la mémorisation.    Ce type de texte convient aux jeunes enfants ou aux débutants en apprentissage du français. "
+    cot1_CECR = "Ce texte est de niveau A1.    Justification : 1) Vocabulaire simple et courant : Les mots utilisés sont basiques et familiers. 2) Phrases courtes et structurées de manière répétitive : Cela facilite la compréhension. 3) Aucune notion abstraite ou complexe : Le texte reste concret et factuel. 4) Présence de nombreuses répétitions : Elles renforcent la compréhension et la mémorisation.    Ce type de texte convient aux jeunes enfants ou aux débutants en apprentissage du français."
+    value1 = "Très Facile"
 
-shot2 = "Les cultures en Afrique du Nord    Les trois pays du Maghreb que sont la Tunisie, le Maroc et l'Algérie ont quasiment les mêmes productions agricoles. Plus on va vers le sud, plus les cultures, les arbres et l'herbe deviennent rares en raison du manque d'eau.  Du nord au sud, la production se répartit comme suit :  - vigne, agrumes (oranges, citrons, mandarines), oliviers, légumes;  - céréales et élevage de moutons;  - dattes, dans les oasis du désert.  Mais l'importance de chaque production varie beaucoup d'un pays à l'autre. Ainsi, en Algérie, la vigne est en tête des productions; au Maroc, ce sont les céréales et l'élevage, tandis qu'en Tunisie, l'olive est prédominante."
-cot2 = "Ce texte est de niveau Facile.    Justification : 1) Vocabulaire simple et accessible, avec quelques termes spécifiques mais compréhensibles dans le contexte (ex. : 'productions agricoles', 'élevage', 'oasis'). 2) Phrases courtes et bien structurées, facilitant la lecture. 3) Organisation logique des informations (du nord au sud, puis par pays). 4) Quelques comparaisons, mais elles restent simples et ne nécessitent pas une analyse approfondie.    Ce texte est donc Facile, adapté à un public ayant une maîtrise élémentaire du français. "
-value2 = "Facile"
+    shot2 = "Les cultures en Afrique du Nord    Les trois pays du Maghreb que sont la Tunisie, le Maroc et l'Algérie ont quasiment les mêmes productions agricoles. Plus on va vers le sud, plus les cultures, les arbres et l'herbe deviennent rares en raison du manque d'eau.  Du nord au sud, la production se répartit comme suit :  - vigne, agrumes (oranges, citrons, mandarines), oliviers, légumes;  - céréales et élevage de moutons;  - dattes, dans les oasis du désert.  Mais l'importance de chaque production varie beaucoup d'un pays à l'autre. Ainsi, en Algérie, la vigne est en tête des productions; au Maroc, ce sont les céréales et l'élevage, tandis qu'en Tunisie, l'olive est prédominante."
+    cot2 = "Ce texte est de niveau Facile.    Justification : 1) Vocabulaire simple et accessible, avec quelques termes spécifiques mais compréhensibles dans le contexte (ex. : 'productions agricoles', 'élevage', 'oasis'). 2) Phrases courtes et bien structurées, facilitant la lecture. 3) Organisation logique des informations (du nord au sud, puis par pays). 4) Quelques comparaisons, mais elles restent simples et ne nécessitent pas une analyse approfondie.    Ce texte est donc Facile, adapté à un public ayant une maîtrise élémentaire du français. "
+    cot2_CECR = "Ce texte est de niveau A2.    Justification : 1) Vocabulaire simple et accessible, avec quelques termes spécifiques mais compréhensibles dans le contexte (ex. : 'productions agricoles', 'élevage', 'oasis'). 2) Phrases courtes et bien structurées, facilitant la lecture. 3) Organisation logique des informations (du nord au sud, puis par pays). 4) Quelques comparaisons, mais elles restent simples et ne nécessitent pas une analyse approfondie.    Ce texte est donc de niveau A2, adapté à un public ayant une maîtrise élémentaire du français."
+    value2 = "Facile"
 
-shot3 = "Horoscope de la semaine du 11 au 17 décembre 2023 pour le Bélier (21 mars - 21 avril)    À la croisée des chemins. Côté pro, si vos objectifs sont clairs, concentrez rendez-vous et prises de décision avant la Nouvelle Lune du 13. Si vous hésitez, patience. De nouvelles idées émergent mais tout est à refaire.  Le signe allié : le Capricorne, il sécurise vos prises de décisions."
-cot3 = "Ce texte est de niveau Accessible.    Justification : 1) Vocabulaire relativement simple : Bien que le texte inclut des termes spécifiques comme 'prise de décision' et 'Nouvelle Lune', ceux-ci restent compréhensibles dans le contexte. 2) Idées directes et claires : Les conseils sont explicites (se concentrer avant la Nouvelle Lune, patienter si on hésite). 3) Structure logique et facile à suivre : Le texte présente des éléments consécutifs qui sont faciles à comprendre pour un public ayant un niveau de langue intermédiaire. 4) Un peu de métaphore mais sans complexité excessive : 'À la croisée des chemins' et 'sécurise vos prises de décisions' sont des expressions courantes dans les horoscopes et n'alourdissent pas le message.    Ce texte est donc Accessible, adapté à un public ayant une maîtrise moyenne du français. "
-value3 = "Accessible"
+    shot3 = "Horoscope de la semaine du 11 au 17 décembre 2023 pour le Bélier (21 mars - 21 avril)    À la croisée des chemins. Côté pro, si vos objectifs sont clairs, concentrez rendez-vous et prises de décision avant la Nouvelle Lune du 13. Si vous hésitez, patience. De nouvelles idées émergent mais tout est à refaire.  Le signe allié : le Capricorne, il sécurise vos prises de décisions."
+    cot3 = "Ce texte est de niveau Accessible.    Justification : 1) Vocabulaire relativement simple : Bien que le texte inclut des termes spécifiques comme 'prise de décision' et 'Nouvelle Lune', ceux-ci restent compréhensibles dans le contexte. 2) Idées directes et claires : Les conseils sont explicites (se concentrer avant la Nouvelle Lune, patienter si on hésite). 3) Structure logique et facile à suivre : Le texte présente des éléments consécutifs qui sont faciles à comprendre pour un public ayant un niveau de langue intermédiaire. 4) Un peu de métaphore mais sans complexité excessive : 'À la croisée des chemins' et 'sécurise vos prises de décisions' sont des expressions courantes dans les horoscopes et n'alourdissent pas le message.    Ce texte est donc Accessible, adapté à un public ayant une maîtrise moyenne du français. "
+    cot3_CECR = "Ce texte est de niveau B1.    Justification : 1) Vocabulaire relativement simple : Bien que le texte inclut des termes spécifiques comme 'prise de décision' et 'Nouvelle Lune', ceux-ci restent compréhensibles dans le contexte. 2) Idées directes et claires : Les conseils sont explicites (se concentrer avant la Nouvelle Lune, patienter si on hésite). 3) Structure logique et facile à suivre : Le texte présente des éléments consécutifs qui sont faciles à comprendre pour un public ayant un niveau de langue intermédiaire. 4) Un peu de métaphore mais sans complexité excessive : 'À la croisée des chemins' et 'sécurise vos prises de décisions' sont des expressions courantes dans les horoscopes et n'alourdissent pas le message.    Ce texte est donc de niveau B1, adapté à un public ayant une maîtrise moyenne du français."
+    value3 = "Accessible"
 
-shot4 = "La sensibilité écologique a connu au cours des dernières années une spectaculaire extension. Alors qu'il y a vingt ans à peine, elle paraissait être l'apanage de ceux que l'on appelait les «enfants gâtés» de la croissance, tout le monde ou presque se déclare aujourd'hui écologiste. Ou, au moins, prêt à prendre au sérieux la question de la protection de la nature, devenue «patrimoine commun» de l'humanité. Le phénomène est mondial, mais particulièrement net chez les Occidentaux, convaincus d'être menacés par les catastrophes écologiques, persuadés des dangers qui pèsent sur la planète et préoccupés par le monde qu'ils laisseront aux générations futures. Le consensus écologique concerne désormais de larges fractions de la population. Tous ceux qui font de la politique se disent «verts», les scientifiques veulent protéger la Terre, les industriels vendre du propre, les consommateurs commencer à modifier leurs comportements et les gens défendre leur cadre de vie.  Cet unanimisme est ambigu et, à l'évidence, tout le monde ne se fait pas la même idée de la nature. La sensibilité écologique s'incarne dans des clientèles, des programmes et des pratiques extrêmement variés et forme une véritable nébuleuse. Elle peut servir de cadre à ceux qui aspirent à une transformation totale de leur vie, comme à ceux qui n'y cherchent que des activités ponctuelles. Elle peut être l'occasion de nouveaux modes de consommation, d'une volonté de maintenir la diversité des milieux naturels et des cultures, etc. La recherche urgente de nouveaux rapports entre la personne et la planète peut ainsi prendre mille détours et cette variété constitue l'un des fondements de la vitalité actuelle de l'écologie.  D'après l'introduction de L'Équivoque écologique, P. Alphandéry, P. Bitoun et Y. Dupont, La Découverte, Essais, 1991."
-cot4 = "Ce texte est de niveau +Complexe.    Justification : 1) Vocabulaire riche et abstrait : Des termes comme 'apanage', 'clientèles', 'nébuleuse', 'unanimisme' nécessitent une bonne maîtrise du français pour être bien compris. 2) Idées nuancées et complexes : Le texte discute des différentes facettes de la sensibilité écologique, de ses implications et de ses contradictions. Il invite à une réflexion approfondie sur le sujet. 3) Concepts philosophiques et sociétaux : Le texte aborde des questions comme la transformation de la vie, les rapports entre la personne et la planète, ce qui demande une certaine capacité d'analyse et d'abstraction. 4) Structure élaborée : Le texte est dense, avec des phrases longues et des idées qui s'entrelacent. Il nécessite une attention particulière pour saisir toutes les nuances.    Ce texte est donc +Complexe, adapté à un public ayant une bonne maîtrise du français et capable de traiter des sujets abstraits et nuancés. "
-value4 = "+Complexe"
+    shot4 = "La sensibilité écologique a connu au cours des dernières années une spectaculaire extension. Alors qu'il y a vingt ans à peine, elle paraissait être l'apanage de ceux que l'on appelait les «enfants gâtés» de la croissance, tout le monde ou presque se déclare aujourd'hui écologiste. Ou, au moins, prêt à prendre au sérieux la question de la protection de la nature, devenue «patrimoine commun» de l'humanité. Le phénomène est mondial, mais particulièrement net chez les Occidentaux, convaincus d'être menacés par les catastrophes écologiques, persuadés des dangers qui pèsent sur la planète et préoccupés par le monde qu'ils laisseront aux générations futures. Le consensus écologique concerne désormais de larges fractions de la population. Tous ceux qui font de la politique se disent «verts», les scientifiques veulent protéger la Terre, les industriels vendre du propre, les consommateurs commencer à modifier leurs comportements et les gens défendre leur cadre de vie.  Cet unanimisme est ambigu et, à l'évidence, tout le monde ne se fait pas la même idée de la nature. La sensibilité écologique s'incarne dans des clientèles, des programmes et des pratiques extrêmement variés et forme une véritable nébuleuse. Elle peut servir de cadre à ceux qui aspirent à une transformation totale de leur vie, comme à ceux qui n'y cherchent que des activités ponctuelles. Elle peut être l'occasion de nouveaux modes de consommation, d'une volonté de maintenir la diversité des milieux naturels et des cultures, etc. La recherche urgente de nouveaux rapports entre la personne et la planète peut ainsi prendre mille détours et cette variété constitue l'un des fondements de la vitalité actuelle de l'écologie.  D'après l'introduction de L'Équivoque écologique, P. Alphandéry, P. Bitoun et Y. Dupont, La Découverte, Essais, 1991."
+    cot4 = "Ce texte est de niveau +Complexe.    Justification : 1) Vocabulaire riche et abstrait : Des termes comme 'apanage', 'clientèles', 'nébuleuse', 'unanimisme' nécessitent une bonne maîtrise du français pour être bien compris. 2) Idées nuancées et complexes : Le texte discute des différentes facettes de la sensibilité écologique, de ses implications et de ses contradictions. Il invite à une réflexion approfondie sur le sujet. 3) Concepts philosophiques et sociétaux : Le texte aborde des questions comme la transformation de la vie, les rapports entre la personne et la planète, ce qui demande une certaine capacité d'analyse et d'abstraction. 4) Structure élaborée : Le texte est dense, avec des phrases longues et des idées qui s'entrelacent. Il nécessite une attention particulière pour saisir toutes les nuances.    Ce texte est donc +Complexe, adapté à un public ayant une bonne maîtrise du français et capable de traiter des sujets abstraits et nuancés. "
+    cot4_CECR = "Ce texte est de niveau B2.    Justification : 1) Vocabulaire riche et abstrait : Des termes comme 'apanage', 'clientèles', 'nébuleuse', 'unanimisme' nécessitent une bonne maîtrise du français pour être bien compris. 2) Idées nuancées et complexes : Le texte discute des différentes facettes de la sensibilité écologique, de ses implications et de ses contradictions. Il invite à une réflexion approfondie sur le sujet. 3) Concepts philosophiques et sociétaux : Le texte aborde des questions comme la transformation de la vie, les rapports entre la personne et la planète, ce qui demande une certaine capacité d'analyse et d'abstraction. 4) Structure élaborée : Le texte est dense, avec des phrases longues et des idées qui s'entrelacent. Il nécessite une attention particulière pour saisir toutes les nuances.    Ce texte est donc de niveau B2, adapté à un public ayant une bonne maîtrise du français et capable de traiter des sujets abstraits et nuancés."
+    value4 = "+Complexe"
 
+if True:
+    # Few shot learning with chain of thought V2
+    shot1_v2 = "Le coq est mort    Le coq est mort,  Le coq est mort,    Le coq est mort.    Il ne dira plus cocodi, cocoda  Il ne dira plus cocodi, cocoda,  cocodicodi, codicoda  cocodicodi, codicoda"
+    cot1_v2 = "Le texte fourni est une répétition de phrases très simples et courtes, utilisant un vocabulaire élémentaire et des structures grammaticales basiques. L'usage est limité à des énoncés descriptifs sans complexité syntaxique ni nuances lexicales. Ce type de formulation correspond au niveau élémentaire de compréhension et d'expression. Selon le Cadre européen commun de référence pour les langues (CECRL), le niveau A1 correspond à la capacité de comprendre et d'utiliser des expressions familières et quotidiennes ainsi que des énoncés très simples visant à satisfaire des besoins concrets."
+    value1_v2 = "Très Facile"
 
+    shot2_v2 = "Inscription à la médiathèque    BULLETIN D'INSCRIPTION  Nom: ....................  Prénom: .................  Date de Naissance :.........Sexe : F / M  Adresse:...................  Code postal:....... Ville : ............  Téléphone portable :......................  Téléphone fixe :..........................  Email:....................  L'email sera utilisé pour vous informer de la mise à disposition de vos réservations.  J'autorise le réseau des médiathèques à me contacter par :  Téléphone : oui non  Email : oui non  Je garantis sur l'honneur l'exactitude des renseignements ci-dessus.  En signant ce document, je reconnais avoir pris connaissance du règlement intérieur et accepte l'ensemble de ces clauses.    Lieu, date, signature"
+    cot2_v2 = "Le texte fourni est un formulaire d'inscription à une médiathèque. Il se compose principalement de champs à remplir avec des informations personnelles et d'instructions simples et formelles. La structure est claire et dépourvue de complexités syntaxiques ou lexicales. Aucun argument développé ni usage avancé de la langue n'est requis pour le comprendre. Selon le Cadre européen commun de référence pour les langues (CECRL), ce type de texte correspond à un niveau A2, car il nécessite une compréhension de phrases courantes et de formulaires administratifs simples."
+    value2_v2 = "Facile"
+
+    shot3_v2 = "Quelqu'un de bien    Debout devant ses illusions  Une femme que plus rien ne dérange  Détenue de son abandon  Son ennui lui donne le change    Que retient-elle de sa vie  Qu'elle pourrait revoir en peinture  Dans un joli cadre verni  En évidence sur un mur    Un mariage en Technicolor  Un couple dans les tons pastel  Assez d'argent sans trop d'efforts  Pour deux trois folies mensuelles    Elle a rêvé comme tout le monde  Qu'elle tutoierait quelques vedettes  Mais ses rêves en elle se fondent  Maintenant son espoir serait d'être    Refrain  Juste quelqu'un de bien  Quelqu'un de bien  Le cœur à portée de main  Juste quelqu'un de bien  Sans grand destin  Une amie à qui l'on tient  Juste quelqu'un de bien  Quelqu'un de bien    Il m'arrive aussi de ces heures  Où ma vie se penche sur le vide  Coupés tous les bruits du moteur  Au-dessus de terres arides    Je plane à l'aube d'un malaise  Comme un soleil qui veut du mal  Aucune réponse n'apaise  Mes questions à la verticale    J'dis bonjour à la boulangère  Je tiens la porte à la vieille dame  Des fleurs pour la fête des mères  Et ce week-end à Amsterdam    Pour que tu m'aimes encore un peu  Quand je n'attends que du mépris  À l'heure où s'enfuit le Bon Dieu  Qui pourrait me dire si je suis    Au refrain    J'aime à penser que tous les hommes  S'arrêtent parfois de poursuivre  L'ambition de marcher sur Rome  Et connaissent la peur de vivre    Sur le bas-côté de la route  Sur la bande d'arrêt d'urgence  Comme des gens qui parlent et qui doutent  D'être au-delà des apparences    Au refrain    Interprète : Enzo Enzo  Paroles et musique : Kent. D.R., 1994."
+    cot3_v2 = "Le texte présente une narration poétique avec des structures variées et un vocabulaire accessible, bien que parfois nuancé. Les thèmes abordés (désillusions, quête de bonheur, gestes du quotidien) restent compréhensibles pour un apprenant intermédiaire, sans nécessiter une analyse linguistique approfondie. Selon le Cadre européen commun de référence pour les langues (CECRL), ce texte correspond au niveau B1, car il exige une compréhension de descriptions, d’émotions et d’événements dans un langage relativement courant, tout en intégrant quelques figures de style accessibles."
+    value3_v2 = "Accessible"
+
+    shot4_v2 = "Monsieur Charles Picqué, Bourgmestre de Saint-Gilles,   Madame Martine Wille, Bourgmestre f. f.   Madame Catherine François, Présidente,   Monsieur Thierry Van Campenhout, Directeur,   et l'équipe du Centre culturel Jacques Franck,    LA TOPOGRAPHIE DU SIGNE  Nicole Callebaut   Peinture/Dessin    L'œuvre picturale de Nicole Callebaut privilégie la suggestion. (...) Parfois dessins, photos et objets se conjuguent en installations et apprivoisent les éléments : « L'air, l'eau et la terre », cartographie décalée, cristallisation sombre, tempêtes mouvementées. (...) Poursuivant sa recherche obstinée, Nicole Callebaut explore matières et techniques, et nous offre une œuvre ouverte, à la ferveur unique qui permet à chaque regardeur de forger son propre décodage. A contempler donc pour choisir un voyage, une dérive, un chemin de connaissance personnel. La poésie ici a rendez-vous avec un frémissement subtil.  (Jo Dustin/Septembre 2010)    Vernissage le vendredi 4 février 2011, de 18h à 21h  Exposition du 5 février au 20 mars 2011  Du mardi au vendredi de 11h à 18h30, les samedis de 11h à 13h30 et de 14h à 18h30 & les dimanches de 14h à 17h et de 19h à 22h. (Entrée libre)   Centre culturel Jacques Franck / direction : Thierry Van Campenhout Chaussée de Waterloo, 94 - 1060 Bruxelles  tél: 02 538 90 20 - email: infoccjf@brutele.be www.ccjacquesfranck.be   Avec le soutien de la Commune de Saint-Gilles, la Communauté française de Belgique, la Commission communautaire française, et la Loterie Nationale."
+    cot4_v2 = "Le texte est une annonce d'exposition mêlant des éléments informatifs (dates, lieu, organisateurs) et une description artistique du travail de Nicole Callebaut. La partie descriptive utilise un langage relativement abstrait et poétique avec des expressions comme « cartographie décalée », « cristallisation sombre », et « frémissement subtil », ce qui demande une certaine aisance en français pour en saisir les nuances. Selon le Cadre européen commun de référence pour les langues (CECRL), ce texte correspond au niveau B2, car il nécessite une bonne compréhension des descriptions subjectives et de la terminologie artistique, tout en restant accessible aux apprenants avancés."
+    value4_v2 = "+Complexe"
+
+classe2CECR = {"Très Facile": "A1", "Facile": "A2", "Accessible": "B1", "+Complexe": "B2"}
+CECR2classe = {"A1": "Très Facile", "A2": "Facile", "B1": "Accessible", "B2": "+Complexe", "C1": "+Complexe", "C2": "+Complexe"}
 
 # Function to classify text difficulty
 def classify_text_difficulty(text: str, model_name: str, prompt_type: str) -> str:
@@ -231,8 +255,68 @@ def classify_text_difficulty(text: str, model_name: str, prompt_type: str) -> st
                 'content': text,
             },
         ])
+    elif prompt_type == "en_CECR": # chain of thought
+        response: ChatResponse = chat(model=model_name, messages=[
+            {
+                'role': 'system',
+                'content': (
+                    'You are a linguistic expert specialized in evaluating French language levels according to the Common European Framework of Reference for Languages (CEFR). Your task is to classify the following French text into one of the CEFR levels: A1, A2, B1, B2, C1, or C2. Respond ONLY with the most appropriate level label, without any explanation or additional text.\n'
+                    '\nExample:'
+                    'Text to classify: "Bonjour, je m\'appelle Jean. J\'habite à Paris. J\'aime jouer au football.'
+                    'CECR Level: **A1**'
+                ),
+            },
+            {'role': 'user','content': "Classify this French text:\n" + text,},
+            {'role': 'assistant', 'content': 'CECR Level: **'}
+        ])
+    elif prompt_type == "en_CECR_few_shot_cot": # chain of thought
+        response: ChatResponse = chat(model=model_name, messages=[
+            {
+                'role': 'system',
+                'content': (
+                    'You are a linguistic expert specialized in evaluating French language levels according to the Common European Framework of Reference for Languages (CEFR). Your task is to classify the following French text into one of the CEFR levels: A1, A2, B1, B2, C1, or C2.\n'
+                    '\nExample:'
+                    'Text to classify: "Bonjour, je m\'appelle Jean. J\'habite à Paris. J\'aime jouer au football.'
+                    'Le texte fourni est composé de phrases simples et courtes, utilisant des structures grammaticales de base et un vocabulaire élémentaire. Selon le Cadre européen commun de référence pour les langues (CECRL), le niveau A1 correspond à la capacité de comprendre et d\'utiliser des expressions familières et quotidiennes ainsi que des énoncés très simples visant à satisfaire des besoins concrets.'
+                    'CECR Level: **A1**'
+                ),
+            },
+            {'role': 'user','content': "Classify this French text:\n" + shot1,},
+            {'role': 'assistant', 'content': cot1_CECR + "\n" + "CECR Level: **" + classe2CECR[value1] + "**"},
+            {'role': 'user', 'content': "Classify this French text:\n" + shot2,},
+            {'role': 'assistant', 'content': cot2_CECR + "\n" + "CECR Level: **" + classe2CECR[value2] + "**"},
+            {'role': 'user', 'content': "Classify this French text:\n" + shot3,},
+            {'role': 'assistant', 'content': cot3_CECR + "\n" + "CECR Level: **" + classe2CECR[value3] + "**"},
+            {'role': 'user', 'content': "Classify this French text:\n" + shot4,},
+            {'role': 'assistant', 'content': cot4_CECR + "\n" + "CECR Level: **" + classe2CECR[value4] + "**"},
+            {'role': 'user','content': "Classify this French text:\n" + text,},
+            {'role': 'assistant', 'content': 'CECR Level: **'}
+        ])
+    elif prompt_type == "en_CECR_few_shot_cot_v2": # chain of thought
+        response: ChatResponse = chat(model=model_name, messages=[
+            {
+                'role': 'system',
+                'content': (
+                    'You are a linguistic expert specialized in evaluating French language levels according to the Common European Framework of Reference for Languages (CEFR). Your task is to classify the following French text into one of the CEFR levels: A1, A2, B1, B2, C1, or C2.\n'
+                    '\nExample:'
+                    'Text to classify: "Bonjour, je m\'appelle Jean. J\'habite à Paris. J\'aime jouer au football.'
+                    'Le texte fourni est composé de phrases simples et courtes, utilisant des structures grammaticales de base et un vocabulaire élémentaire. Selon le Cadre européen commun de référence pour les langues (CECRL), le niveau A1 correspond à la capacité de comprendre et d\'utiliser des expressions familières et quotidiennes ainsi que des énoncés très simples visant à satisfaire des besoins concrets.'
+                    'CECR Level: **A1**'
+                ),
+            },
+            {'role': 'user','content': "Classify this French text:\n" + shot1_v2,},
+            {'role': 'assistant', 'content': cot1_v2 + "\n" + "CECR Level: **" + classe2CECR[value1_v2] + "**"},
+            {'role': 'user', 'content': "Classify this French text:\n" + shot2_v2,},
+            {'role': 'assistant', 'content': cot2_v2 + "\n" + "CECR Level: **" + classe2CECR[value2_v2] + "**"},
+            {'role': 'user', 'content': "Classify this French text:\n" + shot3_v2,},
+            {'role': 'assistant', 'content': cot3_v2 + "\n" + "CECR Level: **" + classe2CECR[value3_v2] + "**"},
+            {'role': 'user', 'content': "Classify this French text:\n" + shot4_v2,},
+            {'role': 'assistant', 'content': cot4_v2 + "\n" + "CECR Level: **" + classe2CECR[value4_v2] + "**"},
+            {'role': 'user','content': "Classify this French text:\n" + text,},
+            {'role': 'assistant', 'content': 'CECR Level: **'}
+        ])
     else:
-        raise ValueError("Invalid prompt type. Must be 'en', 'fr', 'en_do_not', 'fr_do_not', 'fr_few_shot', or 'fr_few_shot_cot'.")
+        raise ValueError("Invalid prompt type. Must be 'en', 'fr', 'en_do_not', 'fr_do_not', 'fr_few_shot', 'fr_few_shot_cot', 'fr_few_shot_cot_with_protocol' or 'en_CECR'.")
     return response['message']['content']
 
 
@@ -271,30 +355,26 @@ def save_confusion_matrix(y_true, y_pred, confusion_matrix_path): # csv_path not
 
 
 def evaluate_classification(dataset, confusion_matrix_path, results_path):
-    pattern = r"(?:<|\*\*)(Very Easy|Easy|Accessible|Complex|Très Facile|Facile|Accessible|\+Complexe)(?:>|\*\*)"
+    pattern = r"(?:<|\*\*)(Very Easy|Easy|Accessible|Complex|Très Facile|Facile|Accessible|\+Complexe|A1|A2|B1|B2|C1|C2)(?:>|\*\*)"
 
     # Correction des valeurs erronées dans la colonne "difficulty"
     for index, row in dataset.iterrows():
-        if row["difficulty"] not in ["Very Easy", "Easy", "Accessible", "Complex", "Très Facile", "Facile", "Accessible", "+Complexe"]:
+        if row["difficulty"] not in ["Very Easy", "Easy", "Accessible", "Complex", "Très Facile", "Facile", "Accessible", "+Complexe", "A1", "A2", "B1", "B2", "C1", "C2"]:
             print("Text:", row["text"])
             print("Before:", row["difficulty"])
 
-            matches = re.findall(pattern, row["difficulty"]) # Trouver toutes les occurrencesif match:
+            matches = re.findall(pattern, row["difficulty"]) # Trouver toutes les occurrences
             if matches:
                 predicted_class = matches[-1]  # Prendre la dernière occurrence
+                if predicted_class in ["A1", "A2", "B1", "B2", "C1", "C2"]:
+                    predicted_class = CECR2classe[predicted_class]
                 dataset.at[index, "difficulty"] = predicted_class
-            # match = re.search(pattern, row["difficulty"])
-            # if match:
-            #     predicted_class = match.group(1)
-            #     dataset.at[index, "difficulty"] = predicted_class
             else:
-                # match = re.search(r"(Very Easy|Easy|Accessible|Complex|Très Facile|Facile|Accessible|\+Complexe)", row["difficulty"][-35:])
-                # if match:
-                #     predicted_class = match.group(1)
-                #     dataset.at[index, "difficulty"] = predicted_class
-                matches = re.findall(r"(Very Easy|Easy|Accessible|Complex|Très Facile|Facile|Accessible|\+Complexe)", row["difficulty"][-35:])
+                matches = re.findall(r"(Very Easy|Easy|Accessible|Complex|Très Facile|Facile|Accessible|\+Complexe|A1|A2|B1|B2|C1|C2)", row["difficulty"])
                 if matches:
                     predicted_class = matches[-1]
+                    if predicted_class in ["A1", "A2", "B1", "B2", "C1", "C2"]:
+                        predicted_class = CECR2classe[predicted_class]
                     dataset.at[index, "difficulty"] = predicted_class
                 else:
                     # Calcul du CER pour chaque valeur candidate et sélection de la meilleure
@@ -367,7 +447,7 @@ def get_difficulty_level(dataset_path, model_name, prompt_type, csv_path):
 
 if __name__ == "__main__":
     model_name = "deepseek-r1:70b" # "llama3.2:1b" # "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
-    prompt_type = "fr_few_shot_cot" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" "fr"
+    prompt_type = "en_CECR_few_shot_cot" # "en_CECR" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" # "fr"
     dataset_path = "../../data/Qualtrics_Annotations_formatB.csv"
     csv_path = "./data/Qualtrics_Annotations_formatB_out_" + model_name + "_" + prompt_type + ".csv"
     confusion_matrix_path = "./results/confusion_matrix_" + model_name + "_" + prompt_type + ".png"
