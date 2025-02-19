@@ -304,12 +304,12 @@ def classify_text_difficulty(text: str, model_name: str, prompt_type: str) -> st
                     'CECR Level: **A1**'
                 ),
             },
+            {'role': 'user', 'content': "Classify this French text:\n" + shot3_v2,},
+            {'role': 'assistant', 'content': cot3_v2 + "\n" + "CECR Level: **" + classe2CECR[value3_v2] + "**"},
             {'role': 'user','content': "Classify this French text:\n" + shot1_v2,},
             {'role': 'assistant', 'content': cot1_v2 + "\n" + "CECR Level: **" + classe2CECR[value1_v2] + "**"},
             {'role': 'user', 'content': "Classify this French text:\n" + shot2_v2,},
             {'role': 'assistant', 'content': cot2_v2 + "\n" + "CECR Level: **" + classe2CECR[value2_v2] + "**"},
-            {'role': 'user', 'content': "Classify this French text:\n" + shot3_v2,},
-            {'role': 'assistant', 'content': cot3_v2 + "\n" + "CECR Level: **" + classe2CECR[value3_v2] + "**"},
             {'role': 'user', 'content': "Classify this French text:\n" + shot4_v2,},
             {'role': 'assistant', 'content': cot4_v2 + "\n" + "CECR Level: **" + classe2CECR[value4_v2] + "**"},
             {'role': 'user','content': "Classify this French text:\n" + text,},
@@ -360,8 +360,8 @@ def evaluate_classification(dataset, confusion_matrix_path, results_path):
     # Correction des valeurs erronées dans la colonne "difficulty"
     for index, row in dataset.iterrows():
         if row["difficulty"] not in ["Very Easy", "Easy", "Accessible", "Complex", "Très Facile", "Facile", "Accessible", "+Complexe", "A1", "A2", "B1", "B2", "C1", "C2"]:
-            print("Text:", row["text"])
-            print("Before:", row["difficulty"])
+            # print("Text:", row["text"])
+            # print("Before:", row["difficulty"])
 
             matches = re.findall(pattern, row["difficulty"]) # Trouver toutes les occurrences
             if matches:
@@ -382,9 +382,9 @@ def evaluate_classification(dataset, confusion_matrix_path, results_path):
                     # cer_scores = [jiwer.cer(row["difficulty"][:max(len(row["difficulty"]), 30)], candidate) for candidate in candidates]
                     cer_scores = [jiwer.cer(row["difficulty"][-15:].lower(), candidate.lower()) for candidate in candidates]
                     dataset.at[index, "difficulty"] = candidates[cer_scores.index(min(cer_scores))]
-            print("After:", dataset.at[index, "difficulty"])
-            print("Real:", row["gold_score_20_label"])
-            input()
+            # print("After:", dataset.at[index, "difficulty"])
+            # print("Real:", row["gold_score_20_label"])
+            # input()
 
     # Conversion des valeurs textuelles en numériques
     mapping_pred = {"Very Easy": 0, "Easy": 1, "Accessible": 2, "Complex": 3, "Très Facile": 0, "Facile": 1, "Accessible": 2, "+Complexe": 3}
@@ -447,7 +447,7 @@ def get_difficulty_level(dataset_path, model_name, prompt_type, csv_path):
 
 if __name__ == "__main__":
     model_name = "deepseek-r1:70b" # "llama3.2:1b" # "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
-    prompt_type = "en_CECR_few_shot_cot" # "en_CECR" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" # "fr"
+    prompt_type = "en_CECR_few_shot_cot_v2" # "en_CECR_few_shot_cot" # "en_CECR" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" # "fr"
     dataset_path = "../../data/Qualtrics_Annotations_formatB.csv"
     csv_path = "./data/Qualtrics_Annotations_formatB_out_" + model_name + "_" + prompt_type + ".csv"
     confusion_matrix_path = "./results/confusion_matrix_" + model_name + "_" + prompt_type + ".png"
