@@ -315,6 +315,29 @@ def classify_text_difficulty(text: str, model_name: str, prompt_type: str) -> st
             {'role': 'user','content': "Classify this French text:\n" + text,},
             {'role': 'assistant', 'content': 'CECR Level: **'}
         ])
+    elif prompt_type == "fr_CECR_few_shot_cot_v2": # chain of thought
+        response: ChatResponse = chat(model=model_name, messages=[
+            {
+                'role': 'system',
+                'content': (
+                    "Vous êtes un expert linguistique spécialisé dans l'évaluation des niveaux de français selon le Cadre européen commun de référence pour les langues (CECR). Votre tâche consiste à classer le texte français suivant dans l'un des niveaux du CECR : A1, A2, B1, B2, C1 ou C2.\n"
+                    '\nExemple :'
+                    'Texte à classifier : "Bonjour, je m\'appelle Jean. J\'habite à Paris. J\'aime jouer au football.'
+                    'Le texte fourni est composé de phrases simples et courtes, utilisant des structures grammaticales de base et un vocabulaire élémentaire. Selon le Cadre européen commun de référence pour les langues (CECRL), le niveau A1 correspond à la capacité de comprendre et d\'utiliser des expressions familières et quotidiennes ainsi que des énoncés très simples visant à satisfaire des besoins concrets.'
+                    'Niveau CECR: **A1**'
+                ),
+            },
+            {'role': 'user', 'content': "Classifiez ce texte français :\n" + shot3_v2,},
+            {'role': 'assistant', 'content': cot3_v2 + "\n" + "Niveau CECR : **" + classe2CECR[value3_v2] + "**"},
+            {'role': 'user','content': "Classifiez ce texte français :\n" + shot1_v2,},
+            {'role': 'assistant', 'content': cot1_v2 + "\n" + "Niveau CECR : **" + classe2CECR[value1_v2] + "**"},
+            {'role': 'user', 'content': "Classifiez ce texte français :\n" + shot2_v2,},
+            {'role': 'assistant', 'content': cot2_v2 + "\n" + "Niveau CECR : **" + classe2CECR[value2_v2] + "**"},
+            {'role': 'user', 'content': "Classifiez ce texte français :\n" + shot4_v2,},
+            {'role': 'assistant', 'content': cot4_v2 + "\n" + "Niveau CECR : **" + classe2CECR[value4_v2] + "**"},
+            {'role': 'user','content': "Classifiez ce texte français :\n" + text,},
+            {'role': 'assistant', 'content': 'Niveau CECR : **'}
+        ])
     else:
         raise ValueError("Invalid prompt type. Must be 'en', 'fr', 'en_do_not', 'fr_do_not', 'fr_few_shot', 'fr_few_shot_cot', 'fr_few_shot_cot_with_protocol' or 'en_CECR'.")
     return response['message']['content']
@@ -447,7 +470,7 @@ def get_difficulty_level(dataset_path, model_name, prompt_type, csv_path):
 
 if __name__ == "__main__":
     model_name = "deepseek-r1:70b" # "llama3.2:1b" # "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
-    prompt_type = "en_CECR_few_shot_cot_v2" # "en_CECR_few_shot_cot" # "en_CECR" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" # "fr"
+    prompt_type = "en_CECR_few_shot_cot_v2" # "en_CECR_few_shot_cot_v2" # "en_CECR_few_shot_cot" # "en_CECR" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" # "fr"
     dataset_path = "../../data/Qualtrics_Annotations_formatB.csv"
     csv_path = "./data/Qualtrics_Annotations_formatB_out_" + model_name + "_" + prompt_type + ".csv"
     confusion_matrix_path = "./results/confusion_matrix_" + model_name + "_" + prompt_type + ".png"
