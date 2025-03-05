@@ -105,6 +105,32 @@ if True:
     cot4_v2 = "Le texte est une annonce d'exposition mêlant des éléments informatifs (dates, lieu, organisateurs) et une description artistique du travail de Nicole Callebaut. La partie descriptive utilise un langage relativement abstrait et poétique avec des expressions comme « cartographie décalée », « cristallisation sombre », et « frémissement subtil », ce qui demande une certaine aisance en français pour en saisir les nuances. Selon le Cadre européen commun de référence pour les langues (CECRL), ce texte correspond au niveau B2, car il nécessite une bonne compréhension des descriptions subjectives et de la terminologie artistique, tout en restant accessible aux apprenants avancés."
     value4_v2 = "+Complexe"
 
+if True:
+    # Few shot learning with chain of thought V3
+    shot1_v3 = "Salut Martin, Est-ce que tu peux venir me chercher en face de la gare ? Je me suis fait arrêter par la police et j'ai perdu tous mes points, Il faut que tu conduises la voiture, Merci de me rejoindre le plus vite possible, Damien"
+    cot1_v3 = "Le texte est un message simple et direct, rédigé dans un langage courant avec des phrases courtes et une structure grammaticale basique. Il utilise un vocabulaire élémentaire et des expressions du quotidien sans complexité particulière. Selon le Cadre européen commun de référence pour les langues (CECRL), ce texte correspond au niveau A1, car il repose sur des phrases simples et des notions essentielles de communication."
+    value1_v3 = "Très Facile"
+
+    shot2_v3 = "A L'ATTENTION DE TOUT LE PERSONNEL  Mardi 11/10/2022  Bonjour,  La direction organise une réunion mercredi 19 octobre, à 15h pour tout le personnel afin de présenter les nouvelles formations, Inscriptions au bureau de Céline avant vendredi 18h,  Merci de votre participation,  La direction"
+    cot2_v3 = "Le texte est une note d'information interne rédigée avec des phrases courtes et une structure simple. Il utilise un vocabulaire basique et des formulations claires, typiques d’une communication fonctionnelle. Selon le Cadre européen commun de référence pour les langues (CECRL), ce texte correspond au niveau A2, car il demande une compréhension de consignes écrites et d’informations factuelles simples, sans nécessiter de compétences linguistiques avancées."
+    value2_v3 = "Facile"
+
+    shot3_v3 = "Infos horaires train Saintes-Niort    Nombre de trajets par jour        10  Durée moyenne d’un trajet       01h34  Durée du trajet le plus court     01h09  Première heure de départ        06h05  Dernière heure de départ         18h10    Horaires train Saintes-Niort Mercredi 13 décembre 2023  Départ        Arrivée        Durée     Transport  06h05         07h22         01h17     TER                        direct  06h56         08h13         01h17     TER                        direct  07h13         09h25         02h12     TER, TGV INOUI    1 correspondance      09h25         11h12         01h47     INTERCITÉS, TER  1 correspondance      10h06         11h15         01h09     TER                        direct    source : www,sncf-connect,com"
+    cot3_v3 = "Le texte est une fiche d’informations sur les horaires de train, présentant des données factuelles sous forme de liste et de tableau. Il utilise un vocabulaire courant lié aux transports et demande une capacité de lecture pour extraire des informations précises (horaires, durées, correspondances). Selon le Cadre européen commun de référence pour les langues (CECRL), ce texte correspond au niveau A2, car il nécessite une compréhension d’informations simples mais détaillées, telles que des horaires et des trajets, ce qui dépasse le niveau élémentaire."
+    value3_v3 = "Facile"
+
+    shot4_v3 = "Débats - Médias traditionnels, médias sociaux,    Guillaume  On a souvent tendance à opposer les médias traditionnels et les réseaux sociaux, Pourtant, les réseaux sociaux témoignent des mêmes défauts que les médias traditionnels : ils cherchent tous les deux à obtenir des revenus de la publicité,  Cependant, une chose fait toute la différence : sur les réseaux sociaux, on peut échanger, on peut remettre l'info en question, Elle devient coconstruite par les différents utilisateurs,    Lionel  Pas question de réglementer les réseaux sociaux ! En leur demandant de différencier les « fake news » des « real news », nous donnerions à Facebook et Google le pouvoir de contrôler ce qui est vrai et ce qui ne l'est pas,  On peut comprendre l'intention, mais quand même, il vaut mieux que nous soyons sans cesse exposés à des informations qui s'opposent, à des nouvelles qui remettent nos croyances en question,    Christophe  Plusieurs présidents dans le monde ont été élus malgré des campagnes très dures de la part des médias d'information, Bien que les journalistes les aient accusés de contradictions et de mensonges, les électeurs ont voté pour eux, Ils n'ont pas été influencés par ces informations et ont montré que ça leur était égal,  La fameuse influence dont tout le monde parle à l'époque des réseaux sociaux a choisi son camp et a déserté les médias d'information, La victoire de ces présidents est la défaite historique des médias traditionnels"
+    cot4_v3 = "Le texte est un débat sur les médias traditionnels et les réseaux sociaux, exprimé à travers trois points de vue argumentés. Il utilise des structures variées (oppositions, concessions, affirmations nuancées) et un vocabulaire relatif aux médias et à la communication. Selon le Cadre européen commun de référence pour les langues (CECRL), ce texte correspond au niveau B1, car il demande une capacité à comprendre des opinions, à suivre une argumentation simple et à identifier les idées principales sur un sujet d’actualité."
+    value4_v3 = "Accessible"
+
+    shot5_v3 = "Les trois vérités de Bouc    (Conte du Sénégal)    Un jour, Bouc, séduit par la religion musulmane se convertit à l’islam, Il décida de se rendre à la Mecque, en pèlerinage,  Il partit, Il marcha, il marcha, et il tomba Ratch sur Hyène, Alors Hyène lui demanda :  – Eh, Bouc ! Où vas-tu donc ainsi, tout seul ?  Il répondit :  – Eh bien, je vais à la Mecque, Je suis converti à l’Islam,  Hyène lui dit :  – Dans ce cas tu es bien arrivé, La Mecque c’est ici,    Devinant ses intentions, Bouc le supplia et dit :  – De grâce, épargne-moi, Je suis père de famille,  Hyène leva le museau, éternua et lui dit :  – Tu ne partiras pas d’ici sans me dire trois vérités indiscutables,  Bouc réfléchit un moment et lui dit :  – Ah oui ?  Hyène répondit :  – Absolument, Avant de partir d’ici, tu me diras trois vérités que personne ne pourra remettre en cause,  Bouc lui dit :  – Oncle Hyène, si j’étais convaincu qu’en prenant ce chemin j’allais à ta rencontre, Dieu sait que je ne l’aurais jamais pris,  Hyène resta interdite un moment et lui dit :  – Tu as raison, Une,  Bouc réfléchit à nouveau et dit :  – Si je rentre au village, et déclare que j’ai rencontré l’hyène dans la brousse, l’on me traitera de menteur,  Hyène lui dit :  – Tu as encore raison, Deux, Il reste une vérité,  Bouc déclara :  – Je suis en tout cas certain d’une chose,    Hyène demanda :  – Laquelle ?  Bouc dit :  – Toute cette palabre, c’est parce que tu n’as pas faim,  Hyène dit :  – C'est juste ! Tu peux donc partir,  Bouc s’enfuit et sauva sa vie"
+    cot5_v3 = "Le texte est un conte traditionnel du Sénégal avec une structure narrative claire, des dialogues simples et un vocabulaire accessible. Il utilise des répétitions et un schéma classique de conte avec une morale implicite. Selon le Cadre européen commun de référence pour les langues (CECRL), ce texte correspond au niveau B1, car il nécessite une compréhension de récits structurés, de dialogues et d’expressions figurées tout en restant globalement accessible à un lecteur intermédiaire."
+    value5_v3 = "Accessible"
+
+    shot6_v3 = "Les rêveries de Madame Bovary,    Nous sommes au milieu du XIXe siècle, Emma, la fille d'un fermier de Normandie, vient d'épouser Charles Bovary, le médecin du village,    Elle songeait quelquefois que c'étaient là pourtant les plus beaux jours de sa vie, la lune de miel, comme on disait, Pour en goûter la douceur, il eût fallu, sans doute, s'en aller vers ces pays à noms sonores où les lendemains de mariage ont de plus suaves paresses ! Dans des chaises de poste, sous des stores de soie bleue, on monte au pas des routes escarpées, écoutant la chanson du postillon, qui se répète dans la montagne avec les clochettes des chèvres et le bruit sourd de la cascade, Quand le soleil se couche, on respire au bord des golfes le parfum des citronniers ; puis, le soir, sur la terrasse des villas, seuls et les doigts confondus, on regarde les étoiles en faisant des projets, Il lui semblait que certains lieux sur la terre devaient produire du bonheur, comme une plante particulière au sol et qui pousse mal tout autre part, Que ne pouvait-elle s'accouder sur le balcon des chalets suisses ou enfermer sa tristesse dans un cottage écossais, avec un mari vêtu d'un habit de velours noir [,,,] et qui porte des bottes molles, un chapeau pointu et des manchettes !    Gustave Flaubert, Madame Bovary, 1857"
+    cot6_v3 = "Le texte est un extrait de Madame Bovary de Gustave Flaubert, un roman du XIXe siècle connu pour son style littéraire sophistiqué et son usage du discours indirect libre. L'extrait présente des phrases longues et descriptives, un vocabulaire riche et des structures complexes impliquant des nuances subtiles dans les pensées et émotions du personnage. Selon le Cadre européen commun de référence pour les langues (CECRL), ce texte correspond au niveau B2, car il nécessite une très bonne compréhension du français littéraire, une capacité à suivre des descriptions détaillées et à interpréter des idées abstraites."
+    value6_v3 = "+Complexe"
+
 classe2CECR = {"Très Facile": "A1", "Facile": "A2", "Accessible": "B1", "+Complexe": "B2"}
 CECR2classe = {"A1": "Très Facile", "A2": "Facile", "B1": "Accessible", "B2": "+Complexe", "C1": "+Complexe", "C2": "+Complexe"}
 
@@ -338,6 +364,29 @@ def classify_text_difficulty(text: str, model_name: str, prompt_type: str) -> st
             {'role': 'user','content': "Classifiez ce texte français :\n" + text,},
             {'role': 'assistant', 'content': 'Niveau CECR : **'}
         ])
+    elif prompt_type == "fr_CECR_few_shot_cot_v3": # chain of thought
+        response: ChatResponse = chat(model=model_name, messages=[
+            {
+                'role': 'system',
+                'content': (
+                    "Vous êtes un expert linguistique spécialisé dans l'évaluation des niveaux de français selon le Cadre européen commun de référence pour les langues (CECR). Votre tâche consiste à classer le texte français suivant dans l'un des niveaux du CECR : A1, A2, B1, B2, C1 ou C2.\n"
+                    '\nExemple :'
+                    'Texte à classifier : "Bonjour, je m\'appelle Jean. J\'habite à Paris. J\'aime jouer au football.'
+                    'Le texte fourni est composé de phrases simples et courtes, utilisant des structures grammaticales de base et un vocabulaire élémentaire. Selon le Cadre européen commun de référence pour les langues (CECRL), le niveau A1 correspond à la capacité de comprendre et d\'utiliser des expressions familières et quotidiennes ainsi que des énoncés très simples visant à satisfaire des besoins concrets.'
+                    'Niveau CECR: **A1**'
+                ),
+            },
+            {'role': 'user', 'content': "Classifiez ce texte français :\n" + shot3_v3,},
+            {'role': 'assistant', 'content': cot3_v3 + "\n" + "Niveau CECR : **" + classe2CECR[value3_v3] + "**"},
+            {'role': 'user','content': "Classifiez ce texte français :\n" + shot1_v3,},
+            {'role': 'assistant', 'content': cot1_v3 + "\n" + "Niveau CECR : **" + classe2CECR[value1_v3] + "**"},
+            {'role': 'user', 'content': "Classifiez ce texte français :\n" + shot2_v3,},
+            {'role': 'assistant', 'content': cot2_v3 + "\n" + "Niveau CECR : **" + classe2CECR[value2_v3] + "**"},
+            {'role': 'user', 'content': "Classifiez ce texte français :\n" + shot4_v3,},
+            {'role': 'assistant', 'content': cot4_v3 + "\n" + "Niveau CECR : **" + classe2CECR[value4_v3] + "**"},
+            {'role': 'user','content': "Classifiez ce texte français :\n" + text,},
+            {'role': 'assistant', 'content': 'Niveau CECR : **'}
+        ])
     else:
         raise ValueError("Invalid prompt type. Must be 'en', 'fr', 'en_do_not', 'fr_do_not', 'fr_few_shot', 'fr_few_shot_cot', 'fr_few_shot_cot_with_protocol' or 'en_CECR'.")
     return response['message']['content']
@@ -470,7 +519,7 @@ def get_difficulty_level(dataset_path, model_name, prompt_type, csv_path):
 
 if __name__ == "__main__":
     model_name = "deepseek-r1:70b" # "llama3.2:1b" # "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
-    prompt_type = "en_CECR_few_shot_cot_v2" # "en_CECR_few_shot_cot_v2" # "en_CECR_few_shot_cot" # "en_CECR" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" # "fr"
+    prompt_type = "fr_CECR_few_shot_cot_v2" # "en_CECR_few_shot_cot_v2" # "en_CECR_few_shot_cot" # "en_CECR" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" # "fr"
     dataset_path = "../../data/Qualtrics_Annotations_formatB.csv"
     csv_path = "./data/Qualtrics_Annotations_formatB_out_" + model_name + "_" + prompt_type + ".csv"
     confusion_matrix_path = "./results/confusion_matrix_" + model_name + "_" + prompt_type + ".png"
