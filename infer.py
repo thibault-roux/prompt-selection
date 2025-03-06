@@ -380,10 +380,15 @@ def classify_text_difficulty(text: str, model_name: str, prompt_type: str) -> st
             {'role': 'assistant', 'content': cot3_v3 + "\n" + "Niveau CECR : **" + classe2CECR[value3_v3] + "**"},
             {'role': 'user','content': "Classifiez ce texte français :\n" + shot1_v3,},
             {'role': 'assistant', 'content': cot1_v3 + "\n" + "Niveau CECR : **" + classe2CECR[value1_v3] + "**"},
+            {'role': 'user', 'content': "Classifiez ce texte français :\n" + shot6_v3,},
+            {'role': 'assistant', 'content': cot6_v3 + "\n" + "Niveau CECR : **" + classe2CECR[value6_v3] + "**"},
             {'role': 'user', 'content': "Classifiez ce texte français :\n" + shot2_v3,},
             {'role': 'assistant', 'content': cot2_v3 + "\n" + "Niveau CECR : **" + classe2CECR[value2_v3] + "**"},
             {'role': 'user', 'content': "Classifiez ce texte français :\n" + shot4_v3,},
             {'role': 'assistant', 'content': cot4_v3 + "\n" + "Niveau CECR : **" + classe2CECR[value4_v3] + "**"},
+            {'role': 'user', 'content': "Classifiez ce texte français :\n" + shot5_v3,},
+            {'role': 'assistant', 'content': cot5_v3 + "\n" + "Niveau CECR : **" + classe2CECR[value5_v3] + "**"},
+            
             {'role': 'user','content': "Classifiez ce texte français :\n" + text,},
             {'role': 'assistant', 'content': 'Niveau CECR : **'}
         ])
@@ -399,10 +404,25 @@ def load_dataset(path="../../data/Qualtrics_Annotations_formatB.csv"):
     return df
 
 def infer_classification(dataset, model_name, prompt_type, csv_path):
+    # if file results/{prompt_type}.txt exists, load it
+    if os.path.exists(f"results/{prompt_type}.txt"):
+        with open(f"results/{prompt_type}.txt", "r") as f:
+            text2output = dict()
+            for line in f.readlines():
+                text, output = line.split("\t$$$\t")
+                text2output[text] = output
+    else:
+        text2output = dict()
+
     bar = progressbar.ProgressBar(maxval=len(dataset))
     i = 0
     for index, row in dataset.iterrows():
-        dataset.at[index, "difficulty"] = classify_text_difficulty(row["text"], model_name, prompt_type)
+        if row["text"] in text2output:
+            dataset.at[index, "difficulty"] = text2output[row["text"]]
+        else:
+            dataset.at[index, "difficulty"] = classify_text_difficulty(row["text"], model_name, prompt_type)
+            with open(f"results/{prompt_type}.txt", "a") as f:
+                f.write(row["text"] + "\t$$$\t" + dataset.at[index, "difficulty"] + "\n")
         i += 1
         bar.update(i)
     bar.finish()
@@ -519,7 +539,7 @@ def get_difficulty_level(dataset_path, model_name, prompt_type, csv_path):
 
 if __name__ == "__main__":
     model_name = "deepseek-r1:70b" # "llama3.2:1b" # "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
-    prompt_type = "fr_CECR_few_shot_cot_v2" # "en_CECR_few_shot_cot_v2" # "en_CECR_few_shot_cot" # "en_CECR" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" # "fr"
+    prompt_type = "fr_CECR_few_shot_cot_v3" # "en_CECR_few_shot_cot_v2" # "en_CECR_few_shot_cot" # "en_CECR" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" # "fr"
     dataset_path = "../../data/Qualtrics_Annotations_formatB.csv"
     csv_path = "./data/Qualtrics_Annotations_formatB_out_" + model_name + "_" + prompt_type + ".csv"
     confusion_matrix_path = "./results/confusion_matrix_" + model_name + "_" + prompt_type + ".png"
