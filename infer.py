@@ -405,8 +405,8 @@ def load_dataset(path="../../data/Qualtrics_Annotations_formatB.csv"):
 
 def infer_classification(dataset, model_name, prompt_type, csv_path):
     # if file results/{prompt_type}.txt exists, load it
-    if os.path.exists(f"results/{prompt_type}.txt"):
-        with open(f"results/{prompt_type}.txt", "r") as f:
+    if os.path.exists(f"results/llm_output/{prompt_type}.txt"):
+        with open(f"results/llm_output/{prompt_type}.txt", "r") as f:
             text2output = dict()
             for line in f.readlines():
                 text, output = line.split("\t$$$\t")
