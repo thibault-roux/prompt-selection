@@ -405,12 +405,11 @@ def load_dataset(path="../../data/Qualtrics_Annotations_formatB.csv"):
 
 def infer_classification(dataset, model_name, prompt_type, csv_path):
     # if file results/{prompt_type}.txt exists, load it
-    if os.path.exists(f"results/llm_output/{prompt_type}.txt"):
-        with open(f"results/llm_output/{prompt_type}.txt", "r") as f:
-            text2output = dict()
-            for line in f.readlines():
-                text, output = line.split("\t$$$\t")
-                text2output[text] = output
+    if os.path.exists(f"results/llm_output/{prompt_type}.json"):
+        with open(f"results/llm_output/{prompt_type}.json", encoding="utf-8") as f:
+            text2output = json.load(f)  # Load the JSON file as a list of dictionaries [{"text_a": ..., "text_b": ...}, ...]
+            # convert the list of dictionaries to a dictionary of text pairs {text_a: text_b, ...}
+            text2output = {pair["text_a"]: pair["text_b"] for pair in text2output}
     else:
         text2output = dict()
 
@@ -421,8 +420,9 @@ def infer_classification(dataset, model_name, prompt_type, csv_path):
             dataset.at[index, "difficulty"] = text2output[row["text"]]
         else:
             dataset.at[index, "difficulty"] = classify_text_difficulty(row["text"], model_name, prompt_type)
-            with open(f"results/{prompt_type}.txt", "a") as f:
-                f.write(row["text"] + "\t$$$\t" + dataset.at[index, "difficulty"] + "\n")
+            text2output[row["text"]] = dataset.at[index, "difficulty"]
+            with open(f"results/llm_output/{prompt_type}.json", "w", encoding="utf-8") as f:
+                json.dump(text2output, f, ensure_ascii=False, indent=4)  # Pretty-print JSON
         i += 1
         bar.update(i)
     bar.finish()
