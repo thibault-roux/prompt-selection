@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import re
 import json
+import numpy as np
 
 
 # protocol of annotations
@@ -461,7 +462,7 @@ def save_confusion_matrix(y_true, y_pred, confusion_matrix_path): # csv_path not
     plt.savefig(confusion_matrix_path)
 
 
-def evaluate_classification(dataset, confusion_matrix_path, results_path):
+def evaluate_classification_old(dataset, confusion_matrix_path, results_path):
     pattern = r"(?:<|\*\*)(Very Easy|Easy|Accessible|Complex|Très Facile|Facile|Accessible|\+Complexe|A1|A2|B1|B2|C1|C2)(?:>|\*\*)"
 
     # Correction des valeurs erronées dans la colonne "difficulty"
@@ -544,6 +545,124 @@ def evaluate_classification(dataset, confusion_matrix_path, results_path):
     with open(results_path, "w") as f:
         f.write(txt)
 
+
+
+
+
+
+
+# Division en 5 parties
+def split_into_folds(y_true, y_pred, n_splits=5):
+    indices = np.array_split(np.arange(len(y_true)), n_splits)
+    return [(y_true[idx], y_pred[idx]) for idx in indices]
+def evaluate_classification(dataset, confusion_matrix_path, results_path):
+    pattern = r"(?:<|\*\*)(Very Easy|Easy|Accessible|Complex|Très Facile|Facile|Accessible|\+Complexe|A1|A2|B1|B2|C1|C2)(?:>|\*\*)"
+
+    # Correction des valeurs erronées dans la colonne "difficulty"
+    for index, row in dataset.iterrows():
+        if row["difficulty"] not in ["Very Easy", "Easy", "Accessible", "Complex", "Très Facile", "Facile", "Accessible", "+Complexe", "A1", "A2", "B1", "B2", "C1", "C2"]:
+            # print("Text:", row["text"])
+            # print("Before:", row["difficulty"])
+
+            matches = re.findall(pattern, row["difficulty"]) # Trouver toutes les occurrences
+            if matches:
+                predicted_class = matches[-1]  # Prendre la dernière occurrence
+                if predicted_class in ["A1", "A2", "B1", "B2", "C1", "C2"]:
+                    predicted_class = CECR2classe[predicted_class]
+                dataset.at[index, "difficulty"] = predicted_class
+            else:
+                matches = re.findall(r"(Very Easy|Easy|Accessible|Complex|Très Facile|Facile|Accessible|\+Complexe|A1|A2|B1|B2|C1|C2)", row["difficulty"])
+                if matches:
+                    predicted_class = matches[-1]
+                    if predicted_class in ["A1", "A2", "B1", "B2", "C1", "C2"]:
+                        predicted_class = CECR2classe[predicted_class]
+                    dataset.at[index, "difficulty"] = predicted_class
+                else:
+                    # Calcul du CER pour chaque valeur candidate et sélection de la meilleure
+                    candidates = ["Very Easy", "Easy", "Accessible", "Complex", "Très Facile", "Facile", "Accessible", "+Complexe"]
+                    # cer_scores = [jiwer.cer(row["difficulty"][:max(len(row["difficulty"]), 30)], candidate) for candidate in candidates]
+                    cer_scores = [jiwer.cer(row["difficulty"][-15:].lower(), candidate.lower()) for candidate in candidates]
+                    dataset.at[index, "difficulty"] = candidates[cer_scores.index(min(cer_scores))]
+            # print("After:", dataset.at[index, "difficulty"])
+            # print("Real:", row["gold_score_20_label"])
+            # input()
+
+    # Conversion des valeurs textuelles en numériques
+    mapping_pred = {"Very Easy": 0, "Easy": 1, "Accessible": 2, "Complex": 3, "Très Facile": 0, "Facile": 1, "Accessible": 2, "+Complexe": 3}
+    mapping_gold = {"Très Facile": 0, "Facile": 1, "Accessible": 2, "+Complexe": 3}
+    dataset["difficulty"] = dataset["difficulty"].map(mapping_pred)
+    dataset["gold_score_20_label"] = dataset["gold_score_20_label"].map(mapping_gold)
+
+    # Extraction des valeurs réelles et prédites
+    y_pred = dataset["difficulty"]
+    y_true = dataset["gold_score_20_label"]
+
+
+
+    folds = split_into_folds(y_true, y_pred, n_splits=5)
+
+    accuracies = []
+    adjacent_accuracies = []
+    macro_f1s = []
+
+    for y_t, y_p in folds:
+        # Calcul des métriques globales
+        acc = accuracy_score(y_t, y_p)
+        adj_acc = (abs(y_t - y_p) <= 1).mean()
+        macro_f1 = f1_score(y_t, y_p, average='macro', zero_division=0)
+
+        accuracies.append(acc)
+        adjacent_accuracies.append(adj_acc)
+        macro_f1s.append(macro_f1)
+
+    print(accuracies)
+
+    # Calcul des moyennes et écarts-types
+    mean_accuracy = np.mean(accuracies)
+    std_accuracy = np.std(accuracies)
+    mean_adj_accuracy = np.mean(adjacent_accuracies)
+    std_adj_accuracy = np.std(adjacent_accuracies)
+    mean_macro_f1 = np.mean(macro_f1s)
+    std_macro_f1 = np.std(macro_f1s)
+
+    print(f"Global Accuracy: {mean_accuracy} ± {std_accuracy}")
+    print(f"Global Adjacent Accuracy: {mean_adj_accuracy} ± {std_adj_accuracy}")
+    print(f"Global Macro F1: {mean_macro_f1} ± {std_macro_f1}")
+
+    txt = f"global_accuracy\t{mean_accuracy} ± {std_accuracy}\nglobal_adjacent_accuracy\t{mean_adj_accuracy} ± {std_adj_accuracy}\nglobal_macro_f1\t{mean_macro_f1} ± {std_macro_f1}\n"
+
+    # Calcul des métriques par classe (F1 classique pour chaque classe)
+    for difficulty in [0, 1, 2, 3]:
+        # Sélection des exemples dont la vérité terrain est la classe 'difficulty'
+        idx = (y_true == difficulty)
+        if idx.sum() == 0:
+            continue
+
+        # Accuracy locale (sur les exemples de la classe)
+        class_accuracy = (y_pred[idx] == y_true[idx]).mean()
+
+        # Adjacent accuracy locale (si la différence absolue <= 1)
+        class_adjacent_accuracy = (abs(y_pred[idx] - y_true[idx]) <= 1).mean()
+
+        # Calcul du F1 pour la classe en mode binaire (classe vs reste)
+        y_true_binary = (y_true == difficulty).astype(int)
+        y_pred_binary = (y_pred == difficulty).astype(int)
+        class_f1 = f1_score(y_true_binary, y_pred_binary, average='binary', zero_division=0)
+
+        print()
+        print(f"Difficulty: {difficulty}")
+        print(f"  Accuracy: {class_accuracy}")
+        print(f"  Adjacent Accuracy: {class_adjacent_accuracy}")
+        print(f"  F1: {class_f1}")
+
+        txt += f"difficulty_{difficulty}_accuracy\t{class_accuracy}\ndifficulty_{difficulty}_adjacent_accuracy\t{class_adjacent_accuracy}\ndifficulty_{difficulty}_f1\t{class_f1}\n"
+
+    save_confusion_matrix(y_true, y_pred, confusion_matrix_path)
+    with open(results_path, "w") as f:
+        f.write(txt)
+
+
+
 def get_difficulty_level(dataset_path, model_name, prompt_type, csv_path):
     if os.path.exists(csv_path):
         dataset = pd.read_csv(csv_path)
@@ -552,9 +671,10 @@ def get_difficulty_level(dataset_path, model_name, prompt_type, csv_path):
         dataset = infer_classification(dataset, model_name, prompt_type, csv_path)
     return dataset
 
+'''
 if __name__ == "__main__":
-    model_name = "deepseek-r1:70b" # "llama3.2:1b" # "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
-    prompt_type = "fr_CECR" # "fr_CECR_few_shot_cot_v3" # "en_CECR_few_shot_cot_v2" # "en_CECR_few_shot_cot" # "en_CECR" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" # "fr"
+    model_name = "deepseek-r1:32b" # "deepseek-r1:70b" # "llama3.2:1b" # "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
+    prompt_type = "fr_CECR_few_shot_cot_v2" # "en_CECR" # "en_CECR_few_shot_cot_v2" # "fr_CECR" # "fr_CECR_few_shot_cot_v3" # "en_CECR_few_shot_cot" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" # "fr"
     dataset_path = "../../data/Qualtrics_Annotations_formatB.csv"
     csv_path = "./data/Qualtrics_Annotations_formatB_out_" + model_name + "_" + prompt_type + ".csv"
     confusion_matrix_path = "./results/confusion_matrix_" + model_name + "_" + prompt_type + ".png"
@@ -567,3 +687,23 @@ if __name__ == "__main__":
     # print(dataset[~dataset["difficulty"].isin(["Very Easy", "Easy", "Accessible", "Complex"])]["difficulty"].unique())
 
     evaluate_classification(dataset, confusion_matrix_path, results_path) # evaluate the classification
+'''
+
+if __name__ == "__main__":
+    model_name = "deepseek-r1:32b" # "deepseek-r1:70b" # "llama3.2:1b" # "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
+    prompt_types = ["en_CECR", "fr_CECR", "fr_CECR_few_shot_cot_v2", "en_CECR_few_shot_cot_v2"] # "en_CECR" # "en_CECR_few_shot_cot_v2" # "fr_CECR" # "fr_CECR_few_shot_cot_v3" # "en_CECR_few_shot_cot" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" # "fr"
+    dataset_path = "../../data/Qualtrics_Annotations_formatB.csv"
+
+
+    for prompt_type in prompt_types:
+        csv_path = "./data/Qualtrics_Annotations_formatB_out_" + model_name + "_" + prompt_type + ".csv"
+        confusion_matrix_path = "./results/confusion_matrix_" + model_name + "_" + prompt_type + ".png"
+        results_path = "./results/results_" + model_name + "_" + prompt_type + ".txt"
+
+        dataset = get_difficulty_level(dataset_path, model_name, prompt_type, csv_path) # infer or load the difficulty level
+
+        print(dataset)
+        # for each value of the column "difficulty", print value if not in ["Very Easy", "Easy", "Accessible", "Complex"]
+        # print(dataset[~dataset["difficulty"].isin(["Very Easy", "Easy", "Accessible", "Complex"])]["difficulty"].unique())
+
+        evaluate_classification(dataset, confusion_matrix_path, results_path) # evaluate the classification
