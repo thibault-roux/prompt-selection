@@ -421,11 +421,16 @@ def load_dataset(path="../../data/Qualtrics_Annotations_formatB.csv"):
 
 def infer_classification(dataset, model_name, prompt_type, csv_path):
     # if file results/{prompt_type}.txt exists, load it
-    if os.path.exists(f"results/llm_output/{prompt_type}.json"):
-        with open(f"results/llm_output/{prompt_type}.json", encoding="utf-8") as f:
+    if os.path.exists(f"results/llm_output/{model_name}_{prompt_type}.json"):
+        with open(f"results/llm_output/{model_name}_{prompt_type}.json", encoding="utf-8") as f:
             text2output = json.load(f)  # Load the JSON file as a list of dictionaries [{"text_a": ..., "text_b": ...}, ...]
             # convert the list of dictionaries to a dictionary of text pairs {text_a: text_b, ...}
-            text2output = {pair["text_a"]: pair["text_b"] for pair in text2output}
+            try:
+                text2output = {pair["text_a"]: pair["text_b"] for pair in text2output}
+            except TypeError:
+                print("model_name:", model_name)
+                print("prompt_type:", prompt_type)
+                raise
     else:
         text2output = dict()
 
@@ -437,7 +442,7 @@ def infer_classification(dataset, model_name, prompt_type, csv_path):
         else:
             dataset.at[index, "difficulty"] = classify_text_difficulty(row["text"], model_name, prompt_type)
             text2output[row["text"]] = dataset.at[index, "difficulty"]
-            with open(f"results/llm_output/{prompt_type}.json", "w", encoding="utf-8") as f:
+            with open(f"results/llm_output/{model_name}_{prompt_type}.json", "w", encoding="utf-8") as f:
                 json.dump(text2output, f, ensure_ascii=False, indent=4)  # Pretty-print JSON
         i += 1
         bar.update(i)
@@ -690,7 +695,7 @@ if __name__ == "__main__":
 '''
 
 if __name__ == "__main__":
-    model_name = "deepseek-r1:32b" # "deepseek-r1:70b" # "llama3.2:1b" # "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
+    model_name = "qwen2.5:72b" # "deepseek-r1:32b" # "deepseek-r1:70b" # "llama3.2:1b" # "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
     prompt_types = ["en_CECR", "fr_CECR", "fr_CECR_few_shot_cot_v2", "en_CECR_few_shot_cot_v2"] # "en_CECR" # "en_CECR_few_shot_cot_v2" # "fr_CECR" # "fr_CECR_few_shot_cot_v3" # "en_CECR_few_shot_cot" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" # "fr"
     dataset_path = "../../data/Qualtrics_Annotations_formatB.csv"
 
