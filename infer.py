@@ -426,7 +426,7 @@ def infer_classification(dataset, model_name, prompt_type, csv_path):
             text2output = json.load(f)  # Load the JSON file as a list of dictionaries [{"text_a": ..., "text_b": ...}, ...]
             # convert the list of dictionaries to a dictionary of text pairs {text_a: text_b, ...}
             try:
-                text2output = {pair["text_a"]: pair["text_b"] for pair in text2output}
+                text2output = {pair[0]: pair[1] for pair in text2output}
             except TypeError:
                 print("model_name:", model_name)
                 print("prompt_type:", prompt_type)
@@ -695,7 +695,7 @@ if __name__ == "__main__":
 '''
 
 if __name__ == "__main__":
-    model_name = "qwen2.5:72b" # "deepseek-r1:32b" # "deepseek-r1:70b" # "llama3.2:1b" # "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
+    model_name = "gemma3:27b" # "qwen2.5:72b" # "deepseek-r1:32b" # "deepseek-r1:70b" # "llama3.2:1b" # "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
     prompt_types = ["en_CECR", "fr_CECR", "fr_CECR_few_shot_cot_v2", "en_CECR_few_shot_cot_v2"] # "en_CECR" # "en_CECR_few_shot_cot_v2" # "fr_CECR" # "fr_CECR_few_shot_cot_v3" # "en_CECR_few_shot_cot" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" # "fr"
     dataset_path = "../../data/Qualtrics_Annotations_formatB.csv"
 
