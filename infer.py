@@ -424,13 +424,6 @@ def infer_classification(dataset, model_name, prompt_type, csv_path):
     if os.path.exists(f"results/llm_output/{model_name}_{prompt_type}.json"):
         with open(f"results/llm_output/{model_name}_{prompt_type}.json", encoding="utf-8") as f:
             text2output = json.load(f)  # Load the JSON file as a list of dictionaries [{"text_a": ..., "text_b": ...}, ...]
-            # convert the list of dictionaries to a dictionary of text pairs {text_a: text_b, ...}
-            try:
-                text2output = {pair[0]: pair[1] for pair in text2output}
-            except TypeError:
-                print("model_name:", model_name)
-                print("prompt_type:", prompt_type)
-                raise
     else:
         text2output = dict()
 
