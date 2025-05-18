@@ -688,14 +688,15 @@ if __name__ == "__main__":
 '''
 
 if __name__ == "__main__":
-    model_name = "gemma3:27b" # "qwen2.5:72b" # "deepseek-r1:32b" # "deepseek-r1:70b" # "llama3.2:1b" # "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
+    model_name = "deepseek-r1:14b" # "deepseek-r1:7b" # "gemma3:27b" # "qwen2.5:72b" # "deepseek-r1:32b" # "deepseek-r1:70b" # "llama3.2:1b" # "deepseek-r1:70b" # "deepseek-r1:7b" # "llama3.2:1b"
     prompt_types = ["en_CECR", "fr_CECR", "fr_CECR_few_shot_cot_v2", "en_CECR_few_shot_cot_v2"] # "en_CECR" # "en_CECR_few_shot_cot_v2" # "fr_CECR" # "fr_CECR_few_shot_cot_v3" # "en_CECR_few_shot_cot" # "fr_few_shot_cot_with_protocol" # "fr_few_shot_cot" # "fr_few_shot" # "fr_do_not" # "en_do_not" # "en" # "fr"
+    # prompt_types = ["en_CECR_few_shot_cot_v2"]
     dataset_path = "../../data/Qualtrics_Annotations_formatB.csv"
 
 
     for prompt_type in prompt_types:
         csv_path = "./data/Qualtrics_Annotations_formatB_out_" + model_name + "_" + prompt_type + ".csv"
-        confusion_matrix_path = "./results/confusion_matrix_" + model_name + "_" + prompt_type + ".png"
+        confusion_matrix_path = "./results/cm/confusion_matrix_" + model_name + "_" + prompt_type + ".png"
         results_path = "./results/results_" + model_name + "_" + prompt_type + ".txt"
 
         dataset = get_difficulty_level(dataset_path, model_name, prompt_type, csv_path) # infer or load the difficulty level
